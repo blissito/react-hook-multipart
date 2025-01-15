@@ -22,6 +22,21 @@ AWS_ACCESS_KEY_ID = "Tu access key";
 AWS_SECRET_ACCESS_KEY = "Tu secret";
 ```
 
+## How to use it
+
+```js
+ try {
+    blob = await upload(file.name, file, {
+        handler: "/api/tu-end-point-favorito",
+        onUploadProgress: (progressEvent) => {
+            console.log(progressEvent.percentage + '%');
+        },
+    });
+    } catch (error: unknown) {
+      console.error(error);
+    }
+```
+
 ## Underneath
 
 This package uses `@aws-sdk/s3-request-presigner` and `@aws-sdk/client-s3` underneath.
