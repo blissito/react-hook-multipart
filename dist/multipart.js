@@ -33418,7 +33418,6 @@ var COMPLETE_MULTIPART_STRING = "complete_multipart_upload";
 
 // src/lib/multipart-uploader.ts
 var handler = async (request, cb) => {
-  console.log("Hello Blissmo, from package \u{1F913}");
   const body = await request.json();
   switch (body.intent) {
     case CREATE_MULTIPART_STRING:
@@ -33437,7 +33436,12 @@ var handler = async (request, cb) => {
         Key: body.key,
         UploadId: body.uploadId
       });
-      return typeof cb === "function" ? cb(completedData) : new Response(JSON.stringify(completedData));
+      const complete = {
+        ...body,
+        completedData,
+        intent: void 0
+      };
+      return typeof cb === "function" ? cb(complete) : new Response(JSON.stringify(complete));
     default:
       return new Response(null);
   }

@@ -9,6 +9,12 @@ I'm currently working on implementing Web Streams 🚬👷🏼
 Install it like so:
 
 ```js
+npm i git+https://github.com/blissito/react-hook-multipart.git
+```
+
+WIP:
+
+```js
 npm install @blissito/react-hook-multipart
 ```
 
