@@ -26,7 +26,7 @@ AWS_SECRET_ACCESS_KEY = "Tu secret";
 
 ```js
  try {
-    blob = await upload(file.name, file, {
+    const blob = await upload(file.name, file, {
         handler: "/api/tu-end-point-favorito",
         onUploadProgress: (progressEvent) => {
             console.log(progressEvent.percentage + '%');
