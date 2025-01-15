@@ -12,7 +12,7 @@ Install it like so:
 npm i git+https://github.com/blissito/react-hook-multipart.git
 ```
 
-WIP:
+WIP: Not yet ready with dits bundlers...
 
 ```js
 npm install @blissito/react-hook-multipart
