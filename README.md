@@ -20,7 +20,7 @@ npm install @blissito/react-hook-multipart
 
 ## Create ENV vars
 
-You need to set all these five env variables, either by exporting them or writem down in your .env file
+You need to set all these five env variables, either by exporting them or write'em down in your .env file
 
 ```js
 AWS_REGION = "auto";

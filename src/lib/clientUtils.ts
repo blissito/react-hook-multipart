@@ -89,6 +89,7 @@ const uploadOnePartRetry = async ({
         method: "PUT",
         body: blob,
       });
+      console.log("RETRY: ", response);
       // @todo abort and content-type?
       if (403 === response.status) {
         bail(new Error("Unauthorized"));
