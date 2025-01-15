@@ -44,7 +44,7 @@ export const getPutPartUrl = async (options: {
 }) => {
   const { Key, UploadId, partNumber, expiresIn = 60 * 15 } = options || {};
   await setCors();
-  return getSignedUrl(
+  return await getSignedUrl(
     S3,
     new UploadPartCommand({
       Bucket,
