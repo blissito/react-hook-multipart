@@ -1,0 +1,14 @@
+{
+  "name": "@blissito/react-hook-multipart",
+  "version": "0.0.1",
+  "exports": "./src/index.ts",
+  "publish": {
+    "include": [
+      "LICENSE",
+      "README.md",
+      "src/**/*.ts",
+      "!src/**/*.node.ts",
+      "!src/**/*.test.ts"
+    ]
+  }
+}

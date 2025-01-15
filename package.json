@@ -1,0 +1,36 @@
+{
+  "name": "react-hook-multipart",
+  "version": "0.0.1",
+  "type": "module",
+  "description": "A fast, efficient hook for upload big files with multipart streams in a React environment",
+  "author": "Héctorbliss <fixtergeek@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/blissito/react-hook-multipart.git",
+    "directory": "src"
+  },
+  "homepage": "https://github.com/blissito/react-hook-multipart/tree/main/react-hook-multipart#readme",
+  "./package.json": "./package.json",
+  "main": "./dist/multipart.js",
+  "module": "./dist/multipart.js",
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "keywords": [],
+  "license": "MIT",
+  "devDependencies": {
+    "esbuild": "0.24.2",
+    "typescript": "^5.7.3"
+  },
+  "scripts": {
+    "build": "npm run build:node",
+    "build:node": "esbuild src/multipart.ts --bundle --platform=node --outfile=dist/multipart.js",
+    "prepare": "npm run build"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.726.1",
+    "@aws-sdk/s3-request-presigner": "^3.726.1"
+  }
+}
