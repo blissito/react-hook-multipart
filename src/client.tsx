@@ -1,1 +1,1 @@
-export { useUploadMultipart } from "./lib/useMultipartUpload.tsx";
+export { useUploadMultipart } from "./lib/useMultipartUpload";

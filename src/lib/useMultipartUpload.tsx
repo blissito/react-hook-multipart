@@ -22,6 +22,7 @@ export const useUploadMultipart = async (
     multipart?: true;
   }
 ): Promise<UploadCompletedData> => {
+  console.log("HELLO BLISSSMO from hook 🤓");
   const {
     access = "public", // @todo implement ACL
     handler,

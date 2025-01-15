@@ -1,9 +1,9 @@
-import {
-  COMPLETE_MULTIPART_STRING,
-  CREATE_MULTIPART_STRING,
-  CREATE_PUT_PART_URL_STRING,
-} from "./multipart-uploader";
 import retry from "async-retry";
+import {
+  CREATE_MULTIPART_STRING,
+  COMPLETE_MULTIPART_STRING,
+  CREATE_PUT_PART_URL_STRING,
+} from "./constants";
 
 export type UploadCompletedData = {
   uploadId: string;

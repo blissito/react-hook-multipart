@@ -1,5 +1,7 @@
 # React Hook Multipart
 
+> Not ready for production 🚧
+
 Is a fast and efficient hook for upload big files with multipart streams in a SSR React environment.
 
 I'm currently working on implementing Web Streams 🚬👷🏼

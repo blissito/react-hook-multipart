@@ -7,7 +7,7 @@ import {
   UploadPartCommand,
   CompleteMultipartUploadCommand,
 } from "@aws-sdk/client-s3";
-import { randomUUID } from "node:crypto";
+import { randomUUID } from "crypto";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 const Bucket = process.env.BUCKET_NAME || "blissmo";
@@ -78,11 +78,6 @@ export const createMultipart = async (Key?: string) => {
   };
 };
 
-const S3 = new S3Client({
-  region: process.env.AWS_REGION,
-  endpoint: process.env.AWS_ENDPOINT_URL_S3,
-});
-
 const setCors = async (options?: {
   MaxAgeSeconds?: number;
   AllowedOrigins?: string[];
@@ -105,3 +100,8 @@ const setCors = async (options?: {
   const command = new PutBucketCorsCommand(input);
   return await S3.send(command);
 };
+
+const S3 = new S3Client({
+  region: process.env.AWS_REGION,
+  endpoint: process.env.AWS_ENDPOINT_URL_S3,
+});

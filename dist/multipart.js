@@ -33386,10 +33386,6 @@ var createMultipart = async (Key) => {
     key: Key
   };
 };
-var S3 = new import_client_s3.S3Client({
-  region: process.env.AWS_REGION,
-  endpoint: process.env.AWS_ENDPOINT_URL_S3
-});
 var setCors = async (options) => {
   const { MaxAgeSeconds = 3600, AllowedOrigins = ["*"] } = options || {};
   const input = {
@@ -33410,16 +33406,22 @@ var setCors = async (options) => {
   const command = new import_client_s3.PutBucketCorsCommand(input);
   return await S3.send(command);
 };
+var S3 = new import_client_s3.S3Client({
+  region: process.env.AWS_REGION,
+  endpoint: process.env.AWS_ENDPOINT_URL_S3
+});
 
-// src/lib/multipart-uploader.ts
-var CREATE_STRING = "create_multipart_upload";
+// src/lib/constants.ts
+var CREATE_MULTIPART_STRING = "create_multipart_upload";
 var CREATE_PUT_PART_URL_STRING = "create_put_part_url";
 var COMPLETE_MULTIPART_STRING = "complete_multipart_upload";
+
+// src/lib/multipart-uploader.ts
 var handler = async (request, cb) => {
   console.log("Hello Blissmo, from package \u{1F913}");
   const body = await request.json();
   switch (body.intent) {
-    case CREATE_STRING:
+    case CREATE_MULTIPART_STRING:
       return new Response(JSON.stringify(await createMultipart()));
     case CREATE_PUT_PART_URL_STRING:
       return new Response(

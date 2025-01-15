@@ -1,9 +1,10 @@
 import type { CompleteMultipartUploadCommandOutput } from "@aws-sdk/client-s3";
 import { completeMultipart, createMultipart, getPutPartUrl } from "./utils";
-
-export const CREATE_MULTIPART_STRING = "create_multipart_upload";
-export const CREATE_PUT_PART_URL_STRING = "create_put_part_url";
-export const COMPLETE_MULTIPART_STRING = "complete_multipart_upload";
+import {
+  COMPLETE_MULTIPART_STRING,
+  CREATE_MULTIPART_STRING,
+  CREATE_PUT_PART_URL_STRING,
+} from "./constants";
 
 // server
 export const handler = async (
