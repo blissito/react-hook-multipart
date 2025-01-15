@@ -7,7 +7,7 @@ import {
   UploadPartCommand,
   CompleteMultipartUploadCommand,
 } from "@aws-sdk/client-s3";
-import { randomUUID } from "crypto";
+import { randomUUID } from "node:crypto";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 const Bucket = process.env.BUCKET_NAME || "blissmo";

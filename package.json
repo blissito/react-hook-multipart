@@ -25,12 +25,14 @@
     "typescript": "^5.7.3"
   },
   "scripts": {
-    "build": "npm run build:node",
+    "build": "npm run build:client",
     "build:node": "esbuild src/multipart.ts --bundle --platform=node --outfile=dist/multipart.js",
+    "build:client": "esbuild src/client.tsx --bundle --outfile=dist/client.js",
     "prepare": "npm run build"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.726.1",
-    "@aws-sdk/s3-request-presigner": "^3.726.1"
+    "@aws-sdk/s3-request-presigner": "^3.726.1",
+    "async-retry": "^1.3.3"
   }
 }

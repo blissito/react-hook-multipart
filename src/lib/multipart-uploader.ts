@@ -1,7 +1,7 @@
 import type { CompleteMultipartUploadCommandOutput } from "@aws-sdk/client-s3";
 import { completeMultipart, createMultipart, getPutPartUrl } from "./utils";
 
-export const CREATE_STRING = "create_multipart_upload";
+export const CREATE_MULTIPART_STRING = "create_multipart_upload";
 export const CREATE_PUT_PART_URL_STRING = "create_put_part_url";
 export const COMPLETE_MULTIPART_STRING = "complete_multipart_upload";
 
@@ -14,7 +14,7 @@ export const handler = async (
   // @todo auth?
   const body = await request.json();
   switch (body.intent) {
-    case CREATE_STRING:
+    case CREATE_MULTIPART_STRING:
       return new Response(JSON.stringify(await createMultipart()));
     case CREATE_PUT_PART_URL_STRING:
       return new Response(

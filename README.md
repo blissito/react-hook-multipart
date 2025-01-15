@@ -1,6 +1,8 @@
 # React Hook Multipart
 
-Is a fast and efficient hook for upload big files with multipart streams in a SSR React environment
+Is a fast and efficient hook for upload big files with multipart streams in a SSR React environment.
+
+I'm currently working on implementing Web Streams 🚬👷🏼
 
 Install it like so:
 
