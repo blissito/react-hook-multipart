@@ -26,17 +26,48 @@ AWS_SECRET_ACCESS_KEY = "Tu secret";
 
 ## How to use it
 
+### Use the handler in your React Router Framework server action
+
 ```js
- try {
-    const blob = await upload(file.name, file, {
-        handler: "/api/tu-end-point-favorito",
-        onUploadProgress: (progressEvent) => {
-            console.log(progressEvent.percentage + '%');
-        },
+import { createAsset } from "~/.server/db";
+import { handler } from "react-hook-multipart";
+import { getUserOrRedirect } from "~/.server/getters";
+import type { Route } from "./+types/experiment";
+
+export const action = async ({ request }: Route.ActionArgs) =>
+  await handler(request, async (complete) => {
+    const user = await getUserOrRedirect(request);
+    // create on DB
+    createAsset({
+      fileMetadata: {
+        ...complete.metadata,
+        originalName: complete.metadata.name,
+      },
+      size: complete.size,
+      storageKey: complete.key,
+      userId: user.id,
+      contentType: complete.contentType,
+      status: "uploaded",
     });
-    } catch (error: unknown) {
-      console.error(error);
-    }
+    return new Response(JSON.stringify(complete));
+  });
+```
+
+### Use the hook in your React Component
+
+```js
+// this handler should be conected to a <input type="file" onChange={handleChange} />
+const handleChange = async (event: ChangeEvent<HTMLInputElement>) => {
+  const file = event.currentTarget.files?.[0];
+  if (!file) return;
+
+  try {
+    const { access, completedData, key, metadata, uploadId, url } =
+      await upload(file?.name, file);
+  } catch (erro) {
+    // do whatever with the error
+  }
+};
 ```
 
 ## Underneath

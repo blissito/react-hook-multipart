@@ -1,5 +1,4 @@
 {
-  "name": "react-hook-multipart",
   "version": "0.0.1",
   "type": "module",
   "description": "A fast, efficient hook for upload big files with multipart streams in a React environment",
@@ -10,22 +9,13 @@
     "directory": "src"
   },
   "homepage": "https://github.com/blissito/react-hook-multipart/tree/main/react-hook-multipart#readme",
-  "./package.json": "./package.json",
-  "main": "./dist/multipart.js",
+  "name": "react-hook-multipart",
   "exports": {
-    ".": [
-      {
-        "types": "./dist/index.d.ts",
-        "default": "./dist/client.js"
-      },
-      {
-        "types": "./dist/multipart.d.ts",
-        "default": "./dist/multipart.js"
-      }
-    ]
+    ".": "./src/multipart.ts",
+    "./react": "./src/client.tsx"
   },
   "files": [
-    "dist",
+    "src",
     "LICENSE",
     "README.md"
   ],
@@ -33,11 +23,13 @@
   "license": "MIT",
   "devDependencies": {
     "esbuild": "0.24.2",
+    "tsup": "^8.3.5",
     "typescript": "^5.7.3"
   },
   "scripts": {
     "build": "npm run build:client && npm run build:node",
     "build:node": "esbuild src/multipart.ts --bundle --platform=node --outfile=dist/multipart.js",
+    "build:tsup": "tsup ./src/multipart.ts",
     "build:client": "esbuild ./src/client.jsx --bundle --minify --sourcemap --target=chrome58,firefox57,safari11 --outfile=dist/client.js",
     "prepare": "npm run build"
   },

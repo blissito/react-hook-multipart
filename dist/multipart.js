@@ -33439,7 +33439,7 @@ var handler = async (request, cb) => {
       });
       return typeof cb === "function" ? cb(completedData) : new Response(JSON.stringify(completedData));
     default:
-      return null;
+      return new Response(null);
   }
 };
 // Annotate the CommonJS export names for ESM import in node:
