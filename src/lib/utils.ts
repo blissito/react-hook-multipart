@@ -78,7 +78,7 @@ export const createMultipart = async (Key?: string) => {
   };
 };
 
-const setCors = async (options?: {
+const setCors = (options?: {
   MaxAgeSeconds?: number;
   AllowedOrigins?: string[];
 }) => {
@@ -98,7 +98,7 @@ const setCors = async (options?: {
     },
   };
   const command = new PutBucketCorsCommand(input);
-  return await S3.send(command);
+  return S3.send(command);
 };
 
 const S3 = new S3Client({
