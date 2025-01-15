@@ -62,6 +62,12 @@ export const action = async ({ request }: Route.ActionArgs) =>
 ### Use the hook in your React Component
 
 ```js
+import { useUploadMultipart } from "react-hook-multipart/react";
+// ...
+const { upload } = useUploadMultipart({
+  onUploadProgress: ({ percentage }) => {},
+});
+// ...
 // this handler should be conected to a <input type="file" onChange={handleChange} />
 const handleChange = async (event: ChangeEvent<HTMLInputElement>) => {
   const file = event.currentTarget.files?.[0];
