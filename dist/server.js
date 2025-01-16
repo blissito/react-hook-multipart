@@ -17,7 +17,7 @@ var completeMultipart = ({
   UploadId,
   Key
 }) => {
-  return S3.send(
+  return getS3Client().send(
     new CompleteMultipartUploadCommand({
       Bucket,
       Key,
@@ -34,7 +34,7 @@ var completeMultipart = ({
 var getPutPartUrl = async (options) => {
   const { Key, UploadId, PartNumber, expiresIn = 60 * 15 } = options || {};
   const url = await getSignedUrl(
-    S3,
+    getS3Client(),
     new UploadPartCommand({
       Bucket,
       Key,
@@ -52,7 +52,7 @@ var getPutPartUrl = async (options) => {
 var createMultipart = async (directory) => {
   let Key = randomUUID();
   Key = directory ? directory + Key : Key;
-  const { UploadId } = await S3.send(
+  const { UploadId } = await getS3Client().send(
     new CreateMultipartUploadCommand({
       Bucket,
       Key
@@ -65,7 +65,7 @@ var createMultipart = async (directory) => {
     key: Key
   };
 };
-var deleteObject = (Key) => S3.send(
+var deleteObject = (Key) => getS3Client().send(
   new DeleteObjectCommand({
     Bucket,
     Key
@@ -73,7 +73,7 @@ var deleteObject = (Key) => S3.send(
 );
 var getReadURL = async (Key, expiresIn = 3600) => {
   return getSignedUrl(
-    S3,
+    getS3Client(),
     new GetObjectCommand({
       Bucket,
       Key
@@ -82,7 +82,7 @@ var getReadURL = async (Key, expiresIn = 3600) => {
   );
 };
 var fileExist = async (Key) => {
-  return await S3.send(
+  return await getS3Client().send(
     new HeadObjectCommand({
       Bucket,
       Key
@@ -95,10 +95,14 @@ var fileExist = async (Key) => {
     return false;
   });
 };
-var S3 = new S3Client({
-  region: process.env.AWS_REGION,
-  endpoint: process.env.AWS_ENDPOINT_URL_S3
-});
+var s3Client;
+function getS3Client() {
+  s3Client ??= new S3Client({
+    region: process.env.AWS_REGION,
+    endpoint: process.env.AWS_ENDPOINT_URL_S3
+  });
+  return s3Client;
+}
 
 // src/lib/constants.ts
 var CREATE_MULTIPART_STRING = "create_multipart_upload";

@@ -22,7 +22,7 @@ export const completeMultipart = ({
   ETags: string[];
   UploadId: string;
 }) => {
-  return S3.send(
+  return getS3Client().send(
     new CompleteMultipartUploadCommand({
       Bucket,
       Key,
@@ -47,7 +47,7 @@ export const getPutPartUrl = async (options: {
   const { Key, UploadId, PartNumber, expiresIn = 60 * 15 } = options || {};
   // await setCors();
   const url = await getSignedUrl(
-    S3,
+    getS3Client(),
     new UploadPartCommand({
       Bucket,
       Key,
@@ -67,7 +67,7 @@ export const createMultipart = async (directory?: string) => {
   let Key: `${string}-${string}-${string}-${string}-${string}` | string =
     randomUUID();
   Key = directory ? directory + Key : Key;
-  const { UploadId } = await S3.send(
+  const { UploadId } = await getS3Client().send(
     new CreateMultipartUploadCommand({
       Bucket,
       Key,
@@ -83,7 +83,7 @@ export const createMultipart = async (directory?: string) => {
 };
 
 export const deleteObject = (Key: string) =>
-  S3.send(
+  getS3Client().send(
     new DeleteObjectCommand({
       Bucket,
       Key,
@@ -92,7 +92,7 @@ export const deleteObject = (Key: string) =>
 
 export const getReadURL = async (Key: string, expiresIn = 3600) => {
   return getSignedUrl(
-    S3,
+    getS3Client(),
     new GetObjectCommand({
       Bucket,
       Key,
@@ -102,12 +102,13 @@ export const getReadURL = async (Key: string, expiresIn = 3600) => {
 };
 
 export const fileExist = async (Key: string) => {
-  return await S3.send(
-    new HeadObjectCommand({
-      Bucket,
-      Key,
-    })
-  )
+  return await getS3Client()
+    .send(
+      new HeadObjectCommand({
+        Bucket,
+        Key,
+      })
+    )
     .then((r) => {
       console.log("::FILE_EXIST:: ", r.ContentType);
       return true;
@@ -138,10 +139,15 @@ const setCors = (options?: {
     },
   };
   const command = new PutBucketCorsCommand(input);
-  return S3.send(command);
+  return getS3Client().send(command);
 };
 
-const S3 = new S3Client({
-  region: process.env.AWS_REGION,
-  endpoint: process.env.AWS_ENDPOINT_URL_S3,
-});
+let s3Client: S3Client;
+
+function getS3Client() {
+  s3Client ??= new S3Client({
+    region: process.env.AWS_REGION,
+    endpoint: process.env.AWS_ENDPOINT_URL_S3,
+  });
+  return s3Client;
+}
