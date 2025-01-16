@@ -5,7 +5,7 @@ import {
   uploadAllParts,
   type FileMetadata,
   type UploadCompletedData,
-} from "./clientUtils";
+} from "./client-utils";
 
 // client
 export const useUploadMultipart = (options?: {

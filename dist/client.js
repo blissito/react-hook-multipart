@@ -1,4 +1,4 @@
-// src/lib/clientUtils.ts
+// src/lib/client-utils.ts
 import retry from "async-retry";
 
 // src/lib/constants.ts
@@ -6,7 +6,7 @@ var CREATE_MULTIPART_STRING = "create_multipart_upload";
 var CREATE_PUT_PART_URL_STRING = "create_put_part_url";
 var COMPLETE_MULTIPART_STRING = "complete_multipart_upload";
 
-// src/lib/clientUtils.ts
+// src/lib/client-utils.ts
 var MB = 1024 * 1024;
 var PART_SIZE = 8 * MB;
 var createMultipartUpload = async (handler = "/api/upload", directory) => {
@@ -51,7 +51,7 @@ var getPutPartUrl = async ({
   );
 };
 var uploadOnePartRetry = async ({
-  attempts = 5,
+  attempts = 2,
   url,
   blob
 }) => {

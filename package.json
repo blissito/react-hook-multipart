@@ -11,7 +11,7 @@
   "homepage": "https://github.com/blissito/react-hook-multipart/tree/main/react-hook-multipart#readme",
   "name": "react-hook-multipart",
   "exports": {
-    ".": "./dist/multipart.js",
+    ".": "./dist/server.js",
     "./react": "./dist/client.js"
   },
   "files": [
@@ -27,10 +27,10 @@
     "typescript": "^5.7.3"
   },
   "scripts": {
-    "build": "npm run build:client && npm run build:tsup",
-    "build:tsup": "tsup ./src/multipart.ts --format esm",
+    "build": "pnpm build:client && pnpm build:server",
+    "build:server": "tsup ./src/server.ts --format esm",
     "build:client": "tsup ./src/client.tsx --format esm",
-    "prepare": "npm run build"
+    "prepare": "pnpm build"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.726.1",

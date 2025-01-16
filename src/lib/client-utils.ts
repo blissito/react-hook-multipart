@@ -76,7 +76,7 @@ const getPutPartUrl = async ({
 };
 
 const uploadOnePartRetry = async ({
-  attempts = 5,
+  attempts = 2,
   url,
   blob,
 }: {
