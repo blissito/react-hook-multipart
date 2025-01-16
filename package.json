@@ -11,8 +11,8 @@
   "homepage": "https://github.com/blissito/react-hook-multipart/tree/main/react-hook-multipart#readme",
   "name": "react-hook-multipart",
   "exports": {
-    ".": "./src/multipart.ts",
-    "./react": "./src/client.tsx"
+    ".": "./dist/multipart.js",
+    "./react": "./dist/client.js"
   },
   "files": [
     "src",
@@ -27,10 +27,9 @@
     "typescript": "^5.7.3"
   },
   "scripts": {
-    "build": "npm run build:client && npm run build:node",
-    "build:node": "esbuild src/multipart.ts --bundle --platform=node --outfile=dist/multipart.js",
-    "build:tsup": "tsup ./src/multipart.ts",
-    "build:client": "esbuild ./src/client.jsx --bundle --minify --sourcemap --target=chrome58,firefox57,safari11 --outfile=dist/client.js",
+    "build": "npm run build:client && npm run build:tsup",
+    "build:tsup": "tsup ./src/multipart.ts --format esm",
+    "build:client": "tsup ./src/client.tsx --format esm",
     "prepare": "npm run build"
   },
   "dependencies": {
