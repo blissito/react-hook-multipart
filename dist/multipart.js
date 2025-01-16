@@ -4,7 +4,10 @@ import {
   PutBucketCorsCommand,
   CreateMultipartUploadCommand,
   UploadPartCommand,
-  CompleteMultipartUploadCommand
+  CompleteMultipartUploadCommand,
+  DeleteObjectCommand,
+  GetObjectCommand,
+  HeadObjectCommand
 } from "@aws-sdk/client-s3";
 import { randomUUID } from "crypto";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
@@ -59,6 +62,37 @@ var createMultipart = async (directory) => {
     uploadId: UploadId,
     key: Key
   };
+};
+var deleteObject = (Key) => S3.send(
+  new DeleteObjectCommand({
+    Bucket,
+    Key
+  })
+);
+var getReadURL = async (Key, expiresIn = 3600) => {
+  await setCors();
+  return getSignedUrl(
+    S3,
+    new GetObjectCommand({
+      Bucket,
+      Key
+    }),
+    { expiresIn }
+  );
+};
+var fileExist = async (Key) => {
+  return await S3.send(
+    new HeadObjectCommand({
+      Bucket,
+      Key
+    })
+  ).then((r) => {
+    console.log("::FILE_EXIST:: ", r.ContentType);
+    return true;
+  }).catch((err) => {
+    console.error("FILE_MAY_NOT_EXIST", Key, err.message);
+    return false;
+  });
 };
 var setCors = (options) => {
   const { MaxAgeSeconds = 3600, AllowedOrigins = ["*"] } = options || {};
@@ -123,5 +157,8 @@ var handler = async (request, cb) => {
   }
 };
 export {
+  deleteObject,
+  fileExist,
+  getReadURL,
   handler
 };

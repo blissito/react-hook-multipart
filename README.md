@@ -76,7 +76,8 @@ const { upload } = useUploadMultipart({
   onUploadComplete({ percentage }) {
     setProgress(percentage); // your own state ✅
   },
-  handler: "/api/experiment", // your own resource route ㊮
+  handler: "/api/upload", // your own resource route ㊮
+  signal: new AbortController(), // @todo about to implement... 👷🏼‍♂️
 });
 
 const handleUpload = async (event) => {
