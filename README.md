@@ -35,14 +35,16 @@ AWS_SECRET_ACCESS_KEY = "Tu secret";
 ### Use the handler in your React Router Framework server action
 
 ```js
+// app/routes/api/experiment.ts
+
 import { createAsset } from "~/.server/assets";
 import type { Route } from "./+types/experiment";
 import { handler } from "react-hook-multipart";
 import { getUserOrRedirect } from "~/.server/getters";
 
-export const action = async ({ request }: Route.ActionArgs) =>
+export const action = async ({ request }: Route.ActionArgs) => {
+  const user = await getUserOrRedirect(request);
   await handler(request, async (complete) => {
-    const user = await getUserOrRedirect(request);
     // create on DB
     createAsset({
       fileMetadata: {
@@ -57,25 +59,29 @@ export const action = async ({ request }: Route.ActionArgs) =>
     });
     return new Response(JSON.stringify(complete));
   });
+};
 ```
 
 ### Use the hook in your React Component
 
 ```js
+// any react component
+
 import { useUploadMultipart } from "react-hook-multipart/react";
 
 const { upload } = useUploadMultipart({
   onUploadComplete({ percentage }) {
-    setProgress(percentage);
+    setProgress(percentage); // your own state ✅
   },
-  handler: "/api/experiment",
+  handler: "/api/experiment", // your own resource route ㊮
 });
-const handleUpload = async () => {
+const handleUpload = async (event) => {
+  const file = event.currentTarget.files?.[0];
   await upload(file.name, file);
 };
 ```
 
-You can use try{}catch(){} blocks to capture any error.
+You can use `try{}catch(){}` blocks to capture any error.
 
 ## Underneath
 
