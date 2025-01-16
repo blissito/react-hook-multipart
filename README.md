@@ -45,6 +45,7 @@ import { handler } from "react-hook-multipart";
 
 export const action = async ({ request }: Route.ActionArgs) => {
   const user = await getUserOrRedirect(request);
+  // your cb is called only on complete
   await handler(request, async ({ metadata, size, key, contentType }) => {
     // create on DB
     createAsset({
