@@ -38,7 +38,7 @@ AWS_SECRET_ACCESS_KEY = "Tu secret";
 // app/routes/api/experiment.ts
 
 import type { Route } from "./+types/experiment";
-import { createAsset } from "~/.server/assets";
+import { createAsset } from "~/.server/db";
 import { getUserOrRedirect } from "~/.server/getters";
 
 import { handler } from "react-hook-multipart";
