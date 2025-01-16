@@ -23,12 +23,14 @@ export const MB = 1024 * 1024;
 export const PART_SIZE = 8 * MB;
 
 export const createMultipartUpload = async (
-  handler: string = "/api/upload"
+  handler: string = "/api/upload",
+  directory?: string
 ) => {
   const init: RequestInit = {
     method: "POST",
     body: JSON.stringify({
       intent: CREATE_MULTIPART_STRING,
+      directory,
     }),
     headers: {
       "content-type": "application/json",
@@ -89,7 +91,6 @@ const uploadOnePartRetry = async ({
         method: "PUT",
         body: blob,
       });
-      console.log("RETRY: ", response);
       // @todo abort and content-type?
       if (403 === response.status) {
         bail(new Error("Unauthorized"));

@@ -33386,7 +33386,7 @@ var createMultipart = async (Key) => {
     key: Key
   };
 };
-var setCors = async (options) => {
+var setCors = (options) => {
   const { MaxAgeSeconds = 3600, AllowedOrigins = ["*"] } = options || {};
   const input = {
     Bucket: process.env.BUCKET_NAME,
@@ -33404,7 +33404,7 @@ var setCors = async (options) => {
     }
   };
   const command = new import_client_s3.PutBucketCorsCommand(input);
-  return await S3.send(command);
+  return S3.send(command);
 };
 var S3 = new import_client_s3.S3Client({
   region: process.env.AWS_REGION,

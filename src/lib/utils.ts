@@ -44,7 +44,7 @@ export const getPutPartUrl = async (options: {
 }) => {
   const { Key, UploadId, partNumber, expiresIn = 60 * 15 } = options || {};
   await setCors();
-  return await getSignedUrl(
+  return getSignedUrl(
     S3,
     new UploadPartCommand({
       Bucket,
@@ -58,11 +58,10 @@ export const getPutPartUrl = async (options: {
   );
 };
 
-export const createMultipart = async (Key?: string) => {
-  if (!Key) {
-    Key = randomUUID();
-  }
-
+export const createMultipart = async (directory?: string) => {
+  let Key: `${string}-${string}-${string}-${string}-${string}` | string =
+    randomUUID();
+  Key = directory ? directory + Key : Key;
   const { UploadId } = await S3.send(
     new CreateMultipartUploadCommand({
       Bucket,
