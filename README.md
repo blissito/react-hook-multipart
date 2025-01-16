@@ -37,27 +37,26 @@ AWS_SECRET_ACCESS_KEY = "Tu secret";
 ```js
 // app/routes/api/experiment.ts
 
-import { createAsset } from "~/.server/assets";
 import type { Route } from "./+types/experiment";
-import { handler } from "react-hook-multipart";
+import { createAsset } from "~/.server/assets";
 import { getUserOrRedirect } from "~/.server/getters";
+
+import { handler } from "react-hook-multipart";
 
 export const action = async ({ request }: Route.ActionArgs) => {
   const user = await getUserOrRedirect(request);
-  await handler(request, async (complete) => {
+  await handler(request, async ({ metadata, size, key, contentType }) => {
     // create on DB
     createAsset({
-      fileMetadata: {
-        ...complete.metadata,
-        originalName: complete.metadata.name,
-      },
-      size: complete.size,
-      storageKey: complete.key,
-      userId: user.id,
-      contentType: complete.contentType,
+      metadata: metadata,
+      size: size,
+      storageKey: key,
+      contentType: contentType,
+
       status: "uploaded",
+      userId: user.id,
     });
-    return new Response(JSON.stringify(complete));
+    return new Response(JSON.stringify({ ok: true }));
   });
 };
 ```
@@ -75,6 +74,7 @@ const { upload } = useUploadMultipart({
   },
   handler: "/api/experiment", // your own resource route ㊮
 });
+
 const handleUpload = async (event) => {
   const file = event.currentTarget.files?.[0];
   await upload(file.name, file);
