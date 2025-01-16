@@ -1,6 +1,6 @@
 # React Hook Multipart
 
-> Not ready for production 🚧
+> Not ready for production 🚧 Tests & Type definitions missing
 
 Is a fast and efficient hook for upload big files with multipart streams in a SSR React environment.
 
