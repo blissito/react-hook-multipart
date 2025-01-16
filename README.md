@@ -77,7 +77,7 @@ const { upload } = useUploadMultipart({
 
 const handleUpload = async (event) => {
   const file = event.currentTarget.files?.[0];
-  await upload(file.name, file);
+  const { key, url } = await upload(file.name, file);
 };
 ```
 
