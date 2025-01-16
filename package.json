@@ -30,6 +30,7 @@
     "build": "pnpm build:client && pnpm build:server",
     "build:server": "tsup ./src/server.ts --format esm",
     "build:client": "tsup ./src/client.tsx --format esm",
+    "dev": "tsup ./src/server.ts --format esm --watch",
     "prepare": "pnpm build"
   },
   "dependencies": {

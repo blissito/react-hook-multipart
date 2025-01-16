@@ -11,7 +11,7 @@ import {
 } from "@aws-sdk/client-s3";
 import { randomUUID } from "crypto";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-var Bucket = process.env.BUCKET_NAME || "blissmo";
+var Bucket = process.env.BUCKET_NAME;
 var completeMultipart = ({
   ETags,
   UploadId,
@@ -32,20 +32,22 @@ var completeMultipart = ({
   );
 };
 var getPutPartUrl = async (options) => {
-  const { Key, UploadId, partNumber, expiresIn = 60 * 15 } = options || {};
-  await setCors();
-  return getSignedUrl(
+  const { Key, UploadId, PartNumber, expiresIn = 60 * 15 } = options || {};
+  const url = await getSignedUrl(
     S3,
     new UploadPartCommand({
       Bucket,
       Key,
       UploadId,
-      PartNumber: partNumber
+      PartNumber
     }),
     {
       expiresIn
     }
   );
+  console.log("type:", typeof url);
+  if (url.includes("UNSIGNED-PAYLOAD")) throw new Error("UNISGNED-PAYLOAD");
+  return url;
 };
 var createMultipart = async (directory) => {
   let Key = randomUUID();
@@ -70,7 +72,6 @@ var deleteObject = (Key) => S3.send(
   })
 );
 var getReadURL = async (Key, expiresIn = 3600) => {
-  await setCors();
   return getSignedUrl(
     S3,
     new GetObjectCommand({
@@ -93,26 +94,6 @@ var fileExist = async (Key) => {
     console.error("FILE_MAY_NOT_EXIST", Key, err.message);
     return false;
   });
-};
-var setCors = (options) => {
-  const { MaxAgeSeconds = 3600, AllowedOrigins = ["*"] } = options || {};
-  const input = {
-    Bucket: process.env.BUCKET_NAME,
-    CORSConfiguration: {
-      CORSRules: [
-        {
-          MaxAgeSeconds,
-          AllowedOrigins,
-          AllowedHeaders: ["*"],
-          ExposeHeaders: ["ETag"],
-          // important for multipart
-          AllowedMethods: ["PUT", "DELETE", "GET"]
-        }
-      ]
-    }
-  };
-  const command = new PutBucketCorsCommand(input);
-  return S3.send(command);
 };
 var S3 = new S3Client({
   region: process.env.AWS_REGION,
@@ -137,7 +118,7 @@ var handler = async (request, cb) => {
         await getPutPartUrl({
           Key: body.key,
           UploadId: body.uploadId,
-          partNumber: body.partNumber
+          PartNumber: body.partNumber
         })
       );
     case COMPLETE_MULTIPART_STRING:

@@ -34,6 +34,7 @@ export const handler = async (
 ) => {
   // @todo auth?
   const body = await request.json();
+
   switch (body.intent) {
     case CREATE_MULTIPART_STRING:
       return new Response(
@@ -44,7 +45,7 @@ export const handler = async (
         await getPutPartUrl({
           Key: body.key,
           UploadId: body.uploadId,
-          partNumber: body.partNumber,
+          PartNumber: body.partNumber,
         })
       );
     case COMPLETE_MULTIPART_STRING:

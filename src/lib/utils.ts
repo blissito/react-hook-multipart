@@ -11,7 +11,7 @@ import {
 import { randomUUID } from "crypto";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
-const Bucket = process.env.BUCKET_NAME || "blissmo";
+const Bucket = process.env.BUCKET_NAME;
 
 export const completeMultipart = ({
   ETags,
@@ -38,25 +38,29 @@ export const completeMultipart = ({
 };
 
 export const getPutPartUrl = async (options: {
+  client?: S3Client;
   Key: string;
   UploadId: string;
-  partNumber: number;
+  PartNumber: number;
   expiresIn?: number; // defaults to 15m
 }) => {
-  const { Key, UploadId, partNumber, expiresIn = 60 * 15 } = options || {};
-  await setCors();
-  return getSignedUrl(
+  const { Key, UploadId, PartNumber, expiresIn = 60 * 15 } = options || {};
+  // await setCors();
+  const url = await getSignedUrl(
     S3,
     new UploadPartCommand({
       Bucket,
       Key,
       UploadId,
-      PartNumber: partNumber,
+      PartNumber,
     }),
     {
       expiresIn,
     }
   );
+  console.log("type:", typeof url);
+  if (url.includes("UNSIGNED-PAYLOAD")) throw new Error("UNISGNED-PAYLOAD");
+  return url;
 };
 
 export const createMultipart = async (directory?: string) => {
@@ -87,7 +91,6 @@ export const deleteObject = (Key: string) =>
   );
 
 export const getReadURL = async (Key: string, expiresIn = 3600) => {
-  await setCors();
   return getSignedUrl(
     S3,
     new GetObjectCommand({

@@ -51,7 +51,7 @@ var getPutPartUrl = async ({
   );
 };
 var uploadOnePartRetry = async ({
-  attempts = 2,
+  attempts = 1,
   url,
   blob
 }) => {
