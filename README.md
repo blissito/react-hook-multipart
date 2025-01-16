@@ -15,7 +15,7 @@ npm i git+https://github.com/blissito/react-hook-multipart.git
 WIP: Not yet ready with dits bundlers...
 
 ```js
-npm install @blissito/react-hook-multipart
+pn i @blissito/react-hook-multipart
 ```
 
 ## Create ENV vars
