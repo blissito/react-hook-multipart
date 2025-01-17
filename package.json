@@ -21,14 +21,15 @@
   ],
   "keywords": [
     "fixter.org",
-    "fixtergeek",
+    "fixtergeek.com",
     "hectorbliss",
     "multipart",
-    "upload",
-    "presigned",
-    "react",
+    "multipart upload",
+    "presigned urls",
+    "react multipart upload",
     "reactrouter",
-    "hook"
+    "hook",
+    "react-hook-multipart"
   ],
   "license": "MIT",
   "devDependencies": {
