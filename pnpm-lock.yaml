@@ -1,5 +1,10 @@
 lockfileVersion: '6.0'
 
+dependencies:
+  async-retry:
+    specifier: ^1.3.3
+    version: 1.3.3
+
 devDependencies:
   '@aws-sdk/client-s3':
     specifier: ^3.362.0
@@ -7,9 +12,6 @@ devDependencies:
   '@aws-sdk/s3-request-presigner':
     specifier: ^3.362.0
     version: 3.362.0
-  async-retry:
-    specifier: ^1.3.3
-    version: 1.3.3
   tsup:
     specifier: ^8.3.5
     version: 8.3.5(typescript@5.7.3)
@@ -1466,7 +1468,7 @@ packages:
     resolution: {integrity: sha512-wfr/jstw9xNi/0teMHrRW7dsz3Lt5ARhYNZ2ewpadnhaIp5mbALhOAP+EAdsC7t4Z6wqsDVv9+W6gm1Dk9mEyw==}
     dependencies:
       retry: 0.13.1
-    dev: true
+    dev: false
 
   /balanced-match@1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
@@ -1780,7 +1782,7 @@ packages:
   /retry@0.13.1:
     resolution: {integrity: sha512-XQBQ3I8W1Cge0Seh+6gjj03LbmRFWuoszgK9ooCpwYIrhhoO80pfq4cUkU5DkknwfOfFteRwlZ56PYOGYyFWdg==}
     engines: {node: '>= 4'}
-    dev: true
+    dev: false
 
   /rollup@4.30.1:
     resolution: {integrity: sha512-mlJ4glW020fPuLi7DkM/lN97mYEZGWeqBnrljzN0gs7GLctqX3lNWxKQ7Gl712UAX+6fog/L3jh4gb7R6aVi3w==}
