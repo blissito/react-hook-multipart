@@ -73,7 +73,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
 import { useUploadMultipart } from "react-hook-multipart/react";
 
 const { upload } = useUploadMultipart({
-  onUploadComplete({ percentage }) {
+  onUploadProgress({ percentage }) {
     setProgress(percentage); // your own state ✅
   },
   handler: "/api/upload", // your own resource route ㊮

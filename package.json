@@ -6,7 +6,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/blissito/react-hook-multipart.git",
-    "directory": "src"
+    "directory": "dist"
   },
   "homepage": "https://github.com/blissito/react-hook-multipart/tree/main/react-hook-multipart#readme",
   "name": "react-hook-multipart",
@@ -15,16 +15,28 @@
     "./react": "./dist/client.js"
   },
   "files": [
-    "src",
+    "dist",
     "LICENSE",
     "README.md"
   ],
-  "keywords": [],
+  "keywords": [
+    "fixter.org",
+    "fixtergeek",
+    "hectorbliss",
+    "multipart",
+    "upload",
+    "presigned",
+    "react",
+    "reactrouter",
+    "hook"
+  ],
   "license": "MIT",
   "devDependencies": {
-    "esbuild": "0.24.2",
     "tsup": "^8.3.5",
-    "typescript": "^5.7.3"
+    "typescript": "^5.7.3",
+    "@aws-sdk/client-s3": "^3.362.0",
+    "@aws-sdk/s3-request-presigner": "^3.362.0",
+    "async-retry": "^1.3.3"
   },
   "scripts": {
     "build": "pnpm build:client && pnpm build:server",
@@ -33,9 +45,5 @@
     "dev": "tsup ./src/server.ts --format esm --watch",
     "prepare": "pnpm build"
   },
-  "dependencies": {
-    "@aws-sdk/client-s3": "^3.726.1",
-    "@aws-sdk/s3-request-presigner": "^3.726.1",
-    "async-retry": "^1.3.3"
-  }
+  "dependencies": {}
 }

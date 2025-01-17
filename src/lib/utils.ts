@@ -37,31 +37,25 @@ export const completeMultipart = ({
   );
 };
 
-export const getPutPartUrl = async (options: {
+export const getPutPartUrl = (options: {
   client?: S3Client;
   Key: string;
   UploadId: string;
   PartNumber: number;
   expiresIn?: number; // defaults to 15m
-}) => {
-  const { Key, UploadId, PartNumber, expiresIn = 60 * 15 } = options || {};
-  // await setCors();
-  const url = await getSignedUrl(
+}) =>
+  getSignedUrl(
     getS3Client(),
     new UploadPartCommand({
       Bucket,
-      Key,
-      UploadId,
-      PartNumber,
+      Key: options.Key,
+      UploadId: options.UploadId,
+      PartNumber: options.PartNumber,
     }),
     {
-      expiresIn,
+      expiresIn: options.expiresIn,
     }
   );
-  console.log("type:", typeof url);
-  if (url.includes("UNSIGNED-PAYLOAD")) throw new Error("UNISGNED-PAYLOAD");
-  return url;
-};
 
 export const createMultipart = async (directory?: string) => {
   let Key: `${string}-${string}-${string}-${string}-${string}` | string =
