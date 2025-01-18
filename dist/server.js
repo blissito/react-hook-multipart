@@ -12887,6 +12887,7 @@ export {
   deleteObject,
   fileExist,
   getReadURL,
+  getS3Client,
   handler
 };
 /*! Bundled license information:
