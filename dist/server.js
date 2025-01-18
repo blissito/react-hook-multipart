@@ -13051,6 +13051,14 @@ var getPutFileUrl = async (Key) => await getSignedUrl(
   }),
   { expiresIn: 3600 }
 );
+var getDeleteFileUrl = async (Key) => getSignedUrl(
+  getS3Client(),
+  new DeleteObjectCommand({
+    Bucket,
+    Key
+  }),
+  { expiresIn: 3600 }
+);
 var s3Client;
 function getS3Client() {
   s3Client ??= new S3Client({
@@ -13100,6 +13108,7 @@ var handler = async (request2, cb2) => {
 export {
   deleteObject,
   fileExist,
+  getDeleteFileUrl,
   getPutFileUrl,
   getReadURL,
   getS3Client,
