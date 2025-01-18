@@ -39,6 +39,7 @@
     "@aws-sdk/s3-request-presigner": "^3.362.0"
   },
   "scripts": {
+    "publish": "pnpm build && npm publish",
     "build": "pnpm build:client && pnpm build:server",
     "build:server": "tsup ./src/server.ts --format esm",
     "build:client": "tsup ./src/client.tsx --format esm",

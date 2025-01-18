@@ -124,7 +124,7 @@ export const getPutFileUrl = async (Key: string) =>
     { expiresIn: 3600 }
   );
 
-export const getRemoveFileUrl = async (Key: string) =>
+export const getDeleteFileUrl = async (Key: string) =>
   getSignedUrl(
     getS3Client(),
     new DeleteObjectCommand({

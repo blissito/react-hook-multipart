@@ -5,4 +5,5 @@ export {
   getReadURL,
   getS3Client,
   getPutFileUrl,
+  getDeleteFileUrl,
 } from "./lib/utils";
