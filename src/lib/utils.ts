@@ -7,6 +7,7 @@ import {
   DeleteObjectCommand,
   GetObjectCommand,
   HeadObjectCommand,
+  PutObjectCommand,
 } from "@aws-sdk/client-s3";
 import { randomUUID } from "crypto";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
@@ -112,6 +113,26 @@ export const fileExist = async (Key: string) => {
       return false;
     });
 };
+
+export const getPutFileUrl = async (Key: string) =>
+  await getSignedUrl(
+    getS3Client(),
+    new PutObjectCommand({
+      Bucket,
+      Key,
+    }),
+    { expiresIn: 3600 }
+  );
+
+export const getRemoveFileUrl = async (Key: string) =>
+  getSignedUrl(
+    getS3Client(),
+    new DeleteObjectCommand({
+      Bucket,
+      Key,
+    }),
+    { expiresIn: 3600 }
+  );
 
 const setCors = (options?: {
   MaxAgeSeconds?: number;

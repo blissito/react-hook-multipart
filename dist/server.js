@@ -3914,6 +3914,36 @@ var getRetryAfterHint = (response) => {
   return retryAfterDate;
 };
 
+// node_modules/.pnpm/@aws-sdk+middleware-sdk-s3@3.357.0/node_modules/@aws-sdk/middleware-sdk-s3/dist-es/check-content-length-header.js
+var CONTENT_LENGTH_HEADER2 = "content-length";
+function checkContentLengthHeader() {
+  return (next, context) => async (args) => {
+    const { request: request2 } = args;
+    if (HttpRequest.isInstance(request2)) {
+      if (!request2.headers[CONTENT_LENGTH_HEADER2]) {
+        const message = `Are you using a Stream of unknown length as the Body of a PutObject request? Consider using Upload instead from @aws-sdk/lib-storage.`;
+        if (typeof context?.logger?.warn === "function") {
+          context.logger.warn(message);
+        } else {
+          console.warn(message);
+        }
+      }
+    }
+    return next({ ...args });
+  };
+}
+var checkContentLengthHeaderMiddlewareOptions = {
+  step: "finalizeRequest",
+  tags: ["CHECK_CONTENT_LENGTH_HEADER"],
+  name: "getCheckContentLengthHeaderPlugin",
+  override: true
+};
+var getCheckContentLengthHeaderPlugin = (unused) => ({
+  applyToStack: (clientStack) => {
+    clientStack.add(checkContentLengthHeader(), checkContentLengthHeaderMiddlewareOptions);
+  }
+});
+
 // node_modules/.pnpm/@aws-sdk+middleware-sdk-s3@3.357.0/node_modules/@aws-sdk/middleware-sdk-s3/dist-es/s3Configuration.js
 var resolveS3Config = (input) => ({
   ...input,
@@ -11329,6 +11359,17 @@ var HeadObjectRequestFilterSensitiveLog = (obj) => ({
   ...obj,
   ...obj.SSECustomerKey && { SSECustomerKey: SENSITIVE_STRING }
 });
+var PutObjectOutputFilterSensitiveLog = (obj) => ({
+  ...obj,
+  ...obj.SSEKMSKeyId && { SSEKMSKeyId: SENSITIVE_STRING },
+  ...obj.SSEKMSEncryptionContext && { SSEKMSEncryptionContext: SENSITIVE_STRING }
+});
+var PutObjectRequestFilterSensitiveLog = (obj) => ({
+  ...obj,
+  ...obj.SSECustomerKey && { SSECustomerKey: SENSITIVE_STRING },
+  ...obj.SSEKMSKeyId && { SSEKMSKeyId: SENSITIVE_STRING },
+  ...obj.SSEKMSEncryptionContext && { SSEKMSEncryptionContext: SENSITIVE_STRING }
+});
 
 // node_modules/.pnpm/@aws-sdk+client-s3@3.362.0/node_modules/@aws-sdk/client-s3/dist-es/models/models_1.js
 var SelectObjectContentEventStream;
@@ -11575,6 +11616,79 @@ var se_HeadObjectCommand = async (input, context) => {
     hostname,
     port,
     method: "HEAD",
+    headers,
+    path: resolvedPath2,
+    query,
+    body
+  });
+};
+var se_PutObjectCommand = async (input, context) => {
+  const { hostname, protocol = "https", port, path: basePath } = await context.endpoint();
+  const headers = map({}, isSerializableHeaderValue2, {
+    "content-type": input.ContentType || "application/octet-stream",
+    "x-amz-acl": input.ACL,
+    "cache-control": input.CacheControl,
+    "content-disposition": input.ContentDisposition,
+    "content-encoding": input.ContentEncoding,
+    "content-language": input.ContentLanguage,
+    "content-length": [() => isSerializableHeaderValue2(input.ContentLength), () => input.ContentLength.toString()],
+    "content-md5": input.ContentMD5,
+    "x-amz-sdk-checksum-algorithm": input.ChecksumAlgorithm,
+    "x-amz-checksum-crc32": input.ChecksumCRC32,
+    "x-amz-checksum-crc32c": input.ChecksumCRC32C,
+    "x-amz-checksum-sha1": input.ChecksumSHA1,
+    "x-amz-checksum-sha256": input.ChecksumSHA256,
+    expires: [() => isSerializableHeaderValue2(input.Expires), () => dateToUtcString(input.Expires).toString()],
+    "x-amz-grant-full-control": input.GrantFullControl,
+    "x-amz-grant-read": input.GrantRead,
+    "x-amz-grant-read-acp": input.GrantReadACP,
+    "x-amz-grant-write-acp": input.GrantWriteACP,
+    "x-amz-server-side-encryption": input.ServerSideEncryption,
+    "x-amz-storage-class": input.StorageClass,
+    "x-amz-website-redirect-location": input.WebsiteRedirectLocation,
+    "x-amz-server-side-encryption-customer-algorithm": input.SSECustomerAlgorithm,
+    "x-amz-server-side-encryption-customer-key": input.SSECustomerKey,
+    "x-amz-server-side-encryption-customer-key-md5": input.SSECustomerKeyMD5,
+    "x-amz-server-side-encryption-aws-kms-key-id": input.SSEKMSKeyId,
+    "x-amz-server-side-encryption-context": input.SSEKMSEncryptionContext,
+    "x-amz-server-side-encryption-bucket-key-enabled": [
+      () => isSerializableHeaderValue2(input.BucketKeyEnabled),
+      () => input.BucketKeyEnabled.toString()
+    ],
+    "x-amz-request-payer": input.RequestPayer,
+    "x-amz-tagging": input.Tagging,
+    "x-amz-object-lock-mode": input.ObjectLockMode,
+    "x-amz-object-lock-retain-until-date": [
+      () => isSerializableHeaderValue2(input.ObjectLockRetainUntilDate),
+      () => (input.ObjectLockRetainUntilDate.toISOString().split(".")[0] + "Z").toString()
+    ],
+    "x-amz-object-lock-legal-hold": input.ObjectLockLegalHoldStatus,
+    "x-amz-expected-bucket-owner": input.ExpectedBucketOwner,
+    ...input.Metadata !== void 0 && Object.keys(input.Metadata).reduce((acc, suffix) => {
+      acc[`x-amz-meta-${suffix.toLowerCase()}`] = input.Metadata[suffix];
+      return acc;
+    }, {})
+  });
+  let resolvedPath2 = `${basePath?.endsWith("/") ? basePath.slice(0, -1) : basePath || ""}/{Key+}`;
+  resolvedPath2 = resolvedPath(resolvedPath2, input, "Bucket", () => input.Bucket, "{Bucket}", false);
+  resolvedPath2 = resolvedPath(resolvedPath2, input, "Key", () => input.Key, "{Key+}", true);
+  const query = map({
+    "x-id": [, "PutObject"]
+  });
+  let body;
+  if (input.Body !== void 0) {
+    body = input.Body;
+  }
+  let contents;
+  if (input.Body !== void 0) {
+    contents = input.Body;
+    body = contents;
+  }
+  return new HttpRequest2({
+    protocol,
+    hostname,
+    port,
+    method: "PUT",
     headers,
     path: resolvedPath2,
     query,
@@ -11953,6 +12067,46 @@ var de_HeadObjectCommandError = async (output, context) => {
         errorCode
       });
   }
+};
+var de_PutObjectCommand = async (output, context) => {
+  if (output.statusCode !== 200 && output.statusCode >= 300) {
+    return de_PutObjectCommandError(output, context);
+  }
+  const contents = map({
+    $metadata: deserializeMetadata5(output),
+    Expiration: [, output.headers["x-amz-expiration"]],
+    ETag: [, output.headers["etag"]],
+    ChecksumCRC32: [, output.headers["x-amz-checksum-crc32"]],
+    ChecksumCRC32C: [, output.headers["x-amz-checksum-crc32c"]],
+    ChecksumSHA1: [, output.headers["x-amz-checksum-sha1"]],
+    ChecksumSHA256: [, output.headers["x-amz-checksum-sha256"]],
+    ServerSideEncryption: [, output.headers["x-amz-server-side-encryption"]],
+    VersionId: [, output.headers["x-amz-version-id"]],
+    SSECustomerAlgorithm: [, output.headers["x-amz-server-side-encryption-customer-algorithm"]],
+    SSECustomerKeyMD5: [, output.headers["x-amz-server-side-encryption-customer-key-md5"]],
+    SSEKMSKeyId: [, output.headers["x-amz-server-side-encryption-aws-kms-key-id"]],
+    SSEKMSEncryptionContext: [, output.headers["x-amz-server-side-encryption-context"]],
+    BucketKeyEnabled: [
+      () => void 0 !== output.headers["x-amz-server-side-encryption-bucket-key-enabled"],
+      () => parseBoolean(output.headers["x-amz-server-side-encryption-bucket-key-enabled"])
+    ],
+    RequestCharged: [, output.headers["x-amz-request-charged"]]
+  });
+  await collectBody2(output.body, context);
+  return contents;
+};
+var de_PutObjectCommandError = async (output, context) => {
+  const parsedOutput = {
+    ...output,
+    body: await parseErrorBody4(output.body, context)
+  };
+  const errorCode = loadRestXmlErrorCode(output, parsedOutput.body);
+  const parsedBody = parsedOutput.body;
+  return throwDefaultError5({
+    output,
+    parsedBody,
+    errorCode
+  });
 };
 var de_UploadPartCommand = async (output, context) => {
   if (output.statusCode !== 200 && output.statusCode >= 300) {
@@ -12589,6 +12743,58 @@ var HeadObjectCommand = class _HeadObjectCommand extends Command {
   }
 };
 
+// node_modules/.pnpm/@aws-sdk+client-s3@3.362.0/node_modules/@aws-sdk/client-s3/dist-es/commands/PutObjectCommand.js
+var PutObjectCommand = class _PutObjectCommand extends Command {
+  static getEndpointParameterInstructions() {
+    return {
+      Bucket: { type: "contextParams", name: "Bucket" },
+      ForcePathStyle: { type: "clientContextParams", name: "forcePathStyle" },
+      UseArnRegion: { type: "clientContextParams", name: "useArnRegion" },
+      DisableMultiRegionAccessPoints: { type: "clientContextParams", name: "disableMultiregionAccessPoints" },
+      Accelerate: { type: "clientContextParams", name: "useAccelerateEndpoint" },
+      UseGlobalEndpoint: { type: "builtInParams", name: "useGlobalEndpoint" },
+      UseFIPS: { type: "builtInParams", name: "useFipsEndpoint" },
+      Endpoint: { type: "builtInParams", name: "endpoint" },
+      Region: { type: "builtInParams", name: "region" },
+      UseDualStack: { type: "builtInParams", name: "useDualstackEndpoint" }
+    };
+  }
+  constructor(input) {
+    super();
+    this.input = input;
+  }
+  resolveMiddleware(clientStack, configuration, options) {
+    this.middlewareStack.use(getSerdePlugin(configuration, this.serialize, this.deserialize));
+    this.middlewareStack.use(getEndpointPlugin(configuration, _PutObjectCommand.getEndpointParameterInstructions()));
+    this.middlewareStack.use(getCheckContentLengthHeaderPlugin(configuration));
+    this.middlewareStack.use(getSsecPlugin(configuration));
+    this.middlewareStack.use(getFlexibleChecksumsPlugin(configuration, {
+      input: this.input,
+      requestAlgorithmMember: "ChecksumAlgorithm",
+      requestChecksumRequired: false
+    }));
+    const stack = clientStack.concat(this.middlewareStack);
+    const { logger: logger2 } = configuration;
+    const clientName = "S3Client";
+    const commandName = "PutObjectCommand";
+    const handlerExecutionContext = {
+      logger: logger2,
+      clientName,
+      commandName,
+      inputFilterSensitiveLog: PutObjectRequestFilterSensitiveLog,
+      outputFilterSensitiveLog: PutObjectOutputFilterSensitiveLog
+    };
+    const { requestHandler } = configuration;
+    return stack.resolve((request2) => requestHandler.handle(request2.request, options || {}), handlerExecutionContext);
+  }
+  serialize(input, context) {
+    return se_PutObjectCommand(input, context);
+  }
+  deserialize(output, context) {
+    return de_PutObjectCommand(output, context);
+  }
+};
+
 // node_modules/.pnpm/@aws-sdk+client-s3@3.362.0/node_modules/@aws-sdk/client-s3/dist-es/commands/UploadPartCommand.js
 var UploadPartCommand = class _UploadPartCommand extends Command {
   static getEndpointParameterInstructions() {
@@ -12837,6 +13043,14 @@ var fileExist = async (Key) => {
     return false;
   });
 };
+var getPutFileUrl = async (Key) => await getSignedUrl(
+  getS3Client(),
+  new PutObjectCommand({
+    Bucket,
+    Key
+  }),
+  { expiresIn: 3600 }
+);
 var s3Client;
 function getS3Client() {
   s3Client ??= new S3Client({
@@ -12886,6 +13100,7 @@ var handler = async (request2, cb2) => {
 export {
   deleteObject,
   fileExist,
+  getPutFileUrl,
   getReadURL,
   getS3Client,
   handler
