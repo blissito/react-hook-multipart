@@ -68,7 +68,9 @@ var uploadOnePartRetry = async ({
       } else if (response.ok && response.headers.has("ETag")) {
         return response;
       } else {
-        throw new Error("Unknown error, ETAG:" + response.headers.get("ETag"));
+        throw new Error(
+          "Unknown error, has ETAG:" + response.headers.has("ETag") + " Value:" + response.headers.get("ETag")
+        );
       }
     },
     {
@@ -153,7 +155,6 @@ var useUploadMultipart = (options) => {
       uploadId,
       onUploadProgress
     });
-    console.info("ETAGS: ", etags);
     const completedData = await completeMultipart({
       metadata,
       key,
