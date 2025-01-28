@@ -65,10 +65,10 @@ var uploadOnePartRetry = async ({
       if (403 === response.status) {
         bail(new Error("Unauthorized"));
         return;
-      } else if (response.ok) {
+      } else if (response.ok && response.headers.has("ETag")) {
         return response;
       } else {
-        throw new Error("Unknown error");
+        throw new Error("Unknown error, ETAG:" + response.headers.get("ETag"));
       }
     },
     {
@@ -101,6 +101,7 @@ var uploadAllParts = async (options) => {
       const percentage = loaded / file.size * 100;
       onUploadProgress?.({ total: file.size, loaded, percentage });
       const str = response.headers.get("ETag");
+      console.log("Etag Origin: ", str);
       return String(str).replaceAll('"', "");
     }
   );
@@ -152,6 +153,7 @@ var useUploadMultipart = (options) => {
       uploadId,
       onUploadProgress
     });
+    console.info("ETAGS: ", etags);
     const completedData = await completeMultipart({
       metadata,
       key,

@@ -95,10 +95,15 @@ const uploadOnePartRetry = async ({
       if (403 === response.status) {
         bail(new Error("Unauthorized"));
         return;
-      } else if (response.ok) {
+      } else if (response.ok && response.headers.has("ETag")) {
         return response;
       } else {
-        throw new Error("Unknown error");
+        throw new Error(
+          "Unknown error, has ETAG:" +
+            response.headers.has("ETag") +
+            " Value:" +
+            response.headers.get("ETag")
+        );
       }
     },
     {
@@ -144,6 +149,7 @@ export const uploadAllParts = async (options: {
       const percentage = (loaded / file.size) * 100;
       onUploadProgress?.({ total: file.size, loaded, percentage }); // on progress
       const str = response.headers.get("ETag");
+      console.log("Etag Origin: ", str);
       return String(str).replaceAll('"', ""); // cleaun up
     }
   );

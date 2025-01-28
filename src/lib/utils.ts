@@ -62,6 +62,7 @@ export const createMultipart = async (directory?: string) => {
   let Key: `${string}-${string}-${string}-${string}-${string}` | string =
     randomUUID();
   Key = directory ? directory + Key : Key;
+  await setCors();
   const { UploadId } = await getS3Client().send(
     new CreateMultipartUploadCommand({
       Bucket,
@@ -85,8 +86,8 @@ export const deleteObject = (Key: string) =>
     })
   );
 
-export const getReadURL = async (Key: string, expiresIn = 3600) => {
-  return getSignedUrl(
+export const getReadURL = (Key: string, expiresIn = 3600) =>
+  getSignedUrl(
     getS3Client(),
     new GetObjectCommand({
       Bucket,
@@ -94,10 +95,9 @@ export const getReadURL = async (Key: string, expiresIn = 3600) => {
     }),
     { expiresIn }
   );
-};
 
-export const fileExist = async (Key: string) => {
-  return await getS3Client()
+export const fileExist = (Key: string) => {
+  return getS3Client()
     .send(
       new HeadObjectCommand({
         Bucket,
@@ -114,8 +114,8 @@ export const fileExist = async (Key: string) => {
     });
 };
 
-export const getPutFileUrl = async (Key: string) =>
-  await getSignedUrl(
+export const getPutFileUrl = (Key: string) =>
+  getSignedUrl(
     getS3Client(),
     new PutObjectCommand({
       Bucket,

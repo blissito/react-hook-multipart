@@ -49,6 +49,7 @@ export const handler = async (
         })
       );
     case COMPLETE_MULTIPART_STRING:
+      console.log("COMPLETE:: ", body);
       const completedData = await completeMultipart({
         ETags: body.etags,
         Key: body.key,
