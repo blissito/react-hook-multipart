@@ -11622,41 +11622,6 @@ var se_HeadObjectCommand = async (input, context) => {
     body
   });
 };
-var se_PutBucketCorsCommand = async (input, context) => {
-  const { hostname, protocol = "https", port, path: basePath } = await context.endpoint();
-  const headers = map({}, isSerializableHeaderValue2, {
-    "content-type": "application/xml",
-    "content-md5": input.ContentMD5,
-    "x-amz-sdk-checksum-algorithm": input.ChecksumAlgorithm,
-    "x-amz-expected-bucket-owner": input.ExpectedBucketOwner
-  });
-  let resolvedPath2 = `${basePath?.endsWith("/") ? basePath.slice(0, -1) : basePath || ""}/`;
-  resolvedPath2 = resolvedPath(resolvedPath2, input, "Bucket", () => input.Bucket, "{Bucket}", false);
-  const query = map({
-    cors: [, ""]
-  });
-  let body;
-  if (input.CORSConfiguration !== void 0) {
-    body = se_CORSConfiguration(input.CORSConfiguration, context);
-  }
-  let contents;
-  if (input.CORSConfiguration !== void 0) {
-    contents = se_CORSConfiguration(input.CORSConfiguration, context);
-    body = '<?xml version="1.0" encoding="UTF-8"?>';
-    contents.addAttribute("xmlns", "http://s3.amazonaws.com/doc/2006-03-01/");
-    body += contents.toString();
-  }
-  return new HttpRequest2({
-    protocol,
-    hostname,
-    port,
-    method: "PUT",
-    headers,
-    path: resolvedPath2,
-    query,
-    body
-  });
-};
 var se_PutObjectCommand = async (input, context) => {
   const { hostname, protocol = "https", port, path: basePath } = await context.endpoint();
   const headers = map({}, isSerializableHeaderValue2, {
@@ -12103,29 +12068,6 @@ var de_HeadObjectCommandError = async (output, context) => {
       });
   }
 };
-var de_PutBucketCorsCommand = async (output, context) => {
-  if (output.statusCode !== 200 && output.statusCode >= 300) {
-    return de_PutBucketCorsCommandError(output, context);
-  }
-  const contents = map({
-    $metadata: deserializeMetadata5(output)
-  });
-  await collectBody2(output.body, context);
-  return contents;
-};
-var de_PutBucketCorsCommandError = async (output, context) => {
-  const parsedOutput = {
-    ...output,
-    body: await parseErrorBody4(output.body, context)
-  };
-  const errorCode = loadRestXmlErrorCode(output, parsedOutput.body);
-  const parsedBody = parsedOutput.body;
-  return throwDefaultError5({
-    output,
-    parsedBody,
-    errorCode
-  });
-};
 var de_PutObjectCommand = async (output, context) => {
   if (output.statusCode !== 200 && output.statusCode >= 300) {
     return de_PutObjectCommandError(output, context);
@@ -12237,24 +12179,6 @@ var de_NotFoundRes = async (parsedOutput, context) => {
   });
   return decorateServiceException(exception, parsedOutput.body);
 };
-var se_AllowedHeaders = (input, context) => {
-  return input.filter((e5) => e5 != null).map((entry) => {
-    const node = XmlNode.of("AllowedHeader", entry);
-    return node.withName("member");
-  });
-};
-var se_AllowedMethods = (input, context) => {
-  return input.filter((e5) => e5 != null).map((entry) => {
-    const node = XmlNode.of("AllowedMethod", entry);
-    return node.withName("member");
-  });
-};
-var se_AllowedOrigins = (input, context) => {
-  return input.filter((e5) => e5 != null).map((entry) => {
-    const node = XmlNode.of("AllowedOrigin", entry);
-    return node.withName("member");
-  });
-};
 var se_CompletedMultipartUpload = (input, context) => {
   const bodyNode = new XmlNode("CompletedMultipartUpload");
   if (input.Parts != null) {
@@ -12297,69 +12221,6 @@ var se_CompletedPart = (input, context) => {
 var se_CompletedPartList = (input, context) => {
   return input.filter((e5) => e5 != null).map((entry) => {
     const node = se_CompletedPart(entry, context);
-    return node.withName("member");
-  });
-};
-var se_CORSConfiguration = (input, context) => {
-  const bodyNode = new XmlNode("CORSConfiguration");
-  if (input.CORSRules != null) {
-    const nodes = se_CORSRules(input.CORSRules, context);
-    nodes.map((node) => {
-      node = node.withName("CORSRule");
-      bodyNode.addChildNode(node);
-    });
-  }
-  return bodyNode;
-};
-var se_CORSRule = (input, context) => {
-  const bodyNode = new XmlNode("CORSRule");
-  if (input.ID != null) {
-    const node = XmlNode.of("ID", input.ID).withName("ID");
-    bodyNode.addChildNode(node);
-  }
-  if (input.AllowedHeaders != null) {
-    const nodes = se_AllowedHeaders(input.AllowedHeaders, context);
-    nodes.map((node) => {
-      node = node.withName("AllowedHeader");
-      bodyNode.addChildNode(node);
-    });
-  }
-  if (input.AllowedMethods != null) {
-    const nodes = se_AllowedMethods(input.AllowedMethods, context);
-    nodes.map((node) => {
-      node = node.withName("AllowedMethod");
-      bodyNode.addChildNode(node);
-    });
-  }
-  if (input.AllowedOrigins != null) {
-    const nodes = se_AllowedOrigins(input.AllowedOrigins, context);
-    nodes.map((node) => {
-      node = node.withName("AllowedOrigin");
-      bodyNode.addChildNode(node);
-    });
-  }
-  if (input.ExposeHeaders != null) {
-    const nodes = se_ExposeHeaders(input.ExposeHeaders, context);
-    nodes.map((node) => {
-      node = node.withName("ExposeHeader");
-      bodyNode.addChildNode(node);
-    });
-  }
-  if (input.MaxAgeSeconds != null) {
-    const node = XmlNode.of("MaxAgeSeconds", String(input.MaxAgeSeconds)).withName("MaxAgeSeconds");
-    bodyNode.addChildNode(node);
-  }
-  return bodyNode;
-};
-var se_CORSRules = (input, context) => {
-  return input.filter((e5) => e5 != null).map((entry) => {
-    const node = se_CORSRule(entry, context);
-    return node.withName("member");
-  });
-};
-var se_ExposeHeaders = (input, context) => {
-  return input.filter((e5) => e5 != null).map((entry) => {
-    const node = XmlNode.of("ExposeHeader", entry);
     return node.withName("member");
   });
 };
@@ -12882,56 +12743,6 @@ var HeadObjectCommand = class _HeadObjectCommand extends Command {
   }
 };
 
-// node_modules/.pnpm/@aws-sdk+client-s3@3.362.0/node_modules/@aws-sdk/client-s3/dist-es/commands/PutBucketCorsCommand.js
-var PutBucketCorsCommand = class _PutBucketCorsCommand extends Command {
-  static getEndpointParameterInstructions() {
-    return {
-      Bucket: { type: "contextParams", name: "Bucket" },
-      ForcePathStyle: { type: "clientContextParams", name: "forcePathStyle" },
-      UseArnRegion: { type: "clientContextParams", name: "useArnRegion" },
-      DisableMultiRegionAccessPoints: { type: "clientContextParams", name: "disableMultiregionAccessPoints" },
-      Accelerate: { type: "clientContextParams", name: "useAccelerateEndpoint" },
-      UseGlobalEndpoint: { type: "builtInParams", name: "useGlobalEndpoint" },
-      UseFIPS: { type: "builtInParams", name: "useFipsEndpoint" },
-      Endpoint: { type: "builtInParams", name: "endpoint" },
-      Region: { type: "builtInParams", name: "region" },
-      UseDualStack: { type: "builtInParams", name: "useDualstackEndpoint" }
-    };
-  }
-  constructor(input) {
-    super();
-    this.input = input;
-  }
-  resolveMiddleware(clientStack, configuration, options) {
-    this.middlewareStack.use(getSerdePlugin(configuration, this.serialize, this.deserialize));
-    this.middlewareStack.use(getEndpointPlugin(configuration, _PutBucketCorsCommand.getEndpointParameterInstructions()));
-    this.middlewareStack.use(getFlexibleChecksumsPlugin(configuration, {
-      input: this.input,
-      requestAlgorithmMember: "ChecksumAlgorithm",
-      requestChecksumRequired: true
-    }));
-    const stack = clientStack.concat(this.middlewareStack);
-    const { logger: logger2 } = configuration;
-    const clientName = "S3Client";
-    const commandName = "PutBucketCorsCommand";
-    const handlerExecutionContext = {
-      logger: logger2,
-      clientName,
-      commandName,
-      inputFilterSensitiveLog: (_) => _,
-      outputFilterSensitiveLog: (_) => _
-    };
-    const { requestHandler } = configuration;
-    return stack.resolve((request2) => requestHandler.handle(request2.request, options || {}), handlerExecutionContext);
-  }
-  serialize(input, context) {
-    return se_PutBucketCorsCommand(input, context);
-  }
-  deserialize(output, context) {
-    return de_PutBucketCorsCommand(output, context);
-  }
-};
-
 // node_modules/.pnpm/@aws-sdk+client-s3@3.362.0/node_modules/@aws-sdk/client-s3/dist-es/commands/PutObjectCommand.js
 var PutObjectCommand = class _PutObjectCommand extends Command {
   static getEndpointParameterInstructions() {
@@ -13190,7 +13001,6 @@ var createMultipart = async (directory, ACL = "private") => {
   console.log("::ACL_USED::", ACL);
   let Key = randomUUID();
   Key = directory ? directory + Key : Key;
-  await setCors();
   const { UploadId } = await getS3Client().send(
     new CreateMultipartUploadCommand({
       Bucket,
@@ -13249,26 +13059,6 @@ var getDeleteFileUrl = async (Key) => getSignedUrl(
   }),
   { expiresIn: 3600 }
 );
-var setCors = (options) => {
-  const { MaxAgeSeconds = 3600, AllowedOrigins = ["*"] } = options || {};
-  const input = {
-    Bucket: process.env.BUCKET_NAME,
-    CORSConfiguration: {
-      CORSRules: [
-        {
-          MaxAgeSeconds,
-          AllowedOrigins,
-          AllowedHeaders: ["*"],
-          ExposeHeaders: ["ETag"],
-          // important for multipart
-          AllowedMethods: ["PUT", "DELETE", "GET"]
-        }
-      ]
-    }
-  };
-  const command = new PutBucketCorsCommand(input);
-  return getS3Client().send(command);
-};
 var s3Client;
 function getS3Client() {
   s3Client ??= new S3Client({

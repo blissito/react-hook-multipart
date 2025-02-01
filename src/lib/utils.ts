@@ -66,7 +66,7 @@ export const createMultipart = async (
   let Key: `${string}-${string}-${string}-${string}-${string}` | string =
     randomUUID();
   Key = directory ? directory + Key : Key;
-  await setCors();
+  // await setCors();
   const { UploadId } = await getS3Client().send(
     new CreateMultipartUploadCommand({
       Bucket,
