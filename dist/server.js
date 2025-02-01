@@ -13285,6 +13285,7 @@ var COMPLETE_MULTIPART_STRING = "complete_multipart_upload";
 // src/lib/multipart-uploader.ts
 var handler = async (request2, cb2, options) => {
   const { ACL = "private" } = options || {};
+  console.log("::CURRENT_ACL::", ACL);
   const body = await request2.json();
   switch (body.intent) {
     case CREATE_MULTIPART_STRING:

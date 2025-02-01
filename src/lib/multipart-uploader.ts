@@ -36,6 +36,7 @@ export const handler = async (
   }
 ) => {
   const { ACL = "private" } = options || {};
+  console.log("::CURRENT_ACL::", ACL);
   // @todo auth?
   const body = await request.json();
 
