@@ -62,6 +62,7 @@ export const createMultipart = async (
   directory?: string,
   ACL: "public-read" | "private" = "private"
 ) => {
+  console.log("::ACL_USED::", ACL);
   let Key: `${string}-${string}-${string}-${string}-${string}` | string =
     randomUUID();
   Key = directory ? directory + Key : Key;

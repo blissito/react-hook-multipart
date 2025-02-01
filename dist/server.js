@@ -13187,6 +13187,7 @@ var getPutPartUrl = (options) => getSignedUrl(
   }
 );
 var createMultipart = async (directory, ACL = "private") => {
+  console.log("::ACL_USED::", ACL);
   let Key = randomUUID();
   Key = directory ? directory + Key : Key;
   await setCors();
