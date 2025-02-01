@@ -7,3 +7,4 @@ export {
   getPutFileUrl,
   getDeleteFileUrl,
 } from "./lib/utils";
+export type { Complete } from "./lib/multipart-uploader";

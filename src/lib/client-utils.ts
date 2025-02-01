@@ -149,7 +149,6 @@ export const uploadAllParts = async (options: {
       const percentage = (loaded / file.size) * 100;
       onUploadProgress?.({ total: file.size, loaded, percentage }); // on progress
       const str = response.headers.get("ETag");
-      console.log("Etag Origin: ", str);
       return String(str).replaceAll('"', ""); // cleaun up
     }
   );

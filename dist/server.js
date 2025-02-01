@@ -13186,14 +13186,15 @@ var getPutPartUrl = (options) => getSignedUrl(
     expiresIn: options.expiresIn
   }
 );
-var createMultipart = async (directory) => {
+var createMultipart = async (directory, ACL = "private") => {
   let Key = randomUUID();
   Key = directory ? directory + Key : Key;
   await setCors();
   const { UploadId } = await getS3Client().send(
     new CreateMultipartUploadCommand({
       Bucket,
-      Key
+      Key,
+      ACL
     })
   );
   if (!UploadId)
@@ -13282,12 +13283,13 @@ var CREATE_PUT_PART_URL_STRING = "create_put_part_url";
 var COMPLETE_MULTIPART_STRING = "complete_multipart_upload";
 
 // src/lib/multipart-uploader.ts
-var handler = async (request2, cb2) => {
+var handler = async (request2, cb2, options) => {
+  const { ACL = "private" } = options || {};
   const body = await request2.json();
   switch (body.intent) {
     case CREATE_MULTIPART_STRING:
       return new Response(
-        JSON.stringify(await createMultipart(body.directory))
+        JSON.stringify(await createMultipart(body.directory, ACL))
       );
     case CREATE_PUT_PART_URL_STRING:
       return new Response(

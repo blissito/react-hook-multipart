@@ -58,7 +58,10 @@ export const getPutPartUrl = (options: {
     }
   );
 
-export const createMultipart = async (directory?: string) => {
+export const createMultipart = async (
+  directory?: string,
+  ACL: "public-read" | "private" = "private"
+) => {
   let Key: `${string}-${string}-${string}-${string}-${string}` | string =
     randomUUID();
   Key = directory ? directory + Key : Key;
@@ -67,6 +70,7 @@ export const createMultipart = async (directory?: string) => {
     new CreateMultipartUploadCommand({
       Bucket,
       Key,
+      ACL,
     })
   );
   if (!UploadId)

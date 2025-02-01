@@ -30,15 +30,19 @@ export type Complete = {
 // server
 export const handler = async (
   request: Request,
-  cb?: (arg0: Complete) => Promise<Response>
+  cb?: (arg0: Complete) => Promise<Response>,
+  options?: {
+    ACL: "public-read" | "private";
+  }
 ) => {
+  const { ACL = "private" } = options || {};
   // @todo auth?
   const body = await request.json();
 
   switch (body.intent) {
     case CREATE_MULTIPART_STRING:
       return new Response(
-        JSON.stringify(await createMultipart(body.directory))
+        JSON.stringify(await createMultipart(body.directory, ACL))
       );
     case CREATE_PUT_PART_URL_STRING:
       return new Response(
