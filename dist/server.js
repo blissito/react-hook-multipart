@@ -12998,7 +12998,6 @@ var getPutPartUrl = (options) => getSignedUrl(
   }
 );
 var createMultipart = async (directory, ACL = "private") => {
-  console.log("::ACL_USED::", ACL);
   let Key = randomUUID();
   Key = directory ? directory + Key : Key;
   const { UploadId } = await getS3Client().send(
@@ -13008,6 +13007,7 @@ var createMultipart = async (directory, ACL = "private") => {
       ACL
     })
   );
+  console.info("::ACL_USED::", ACL);
   if (!UploadId)
     throw new Error("Error trying to create a multipart upload \u{1F6A8}");
   return {
@@ -13076,7 +13076,6 @@ var COMPLETE_MULTIPART_STRING = "complete_multipart_upload";
 // src/lib/multipart-uploader.ts
 var handler = async (request2, cb2, options) => {
   const { ACL = "private" } = options || {};
-  console.log("::CURRENT_ACL::", ACL);
   const body = await request2.json();
   switch (body.intent) {
     case CREATE_MULTIPART_STRING:
@@ -13092,7 +13091,7 @@ var handler = async (request2, cb2, options) => {
         })
       );
     case COMPLETE_MULTIPART_STRING:
-      console.log("COMPLETE:: ", body);
+      console.log("COMPLETED:: ", body);
       const completedData = await completeMultipart({
         ETags: body.etags,
         Key: body.key,

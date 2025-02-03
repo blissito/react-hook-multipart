@@ -12,7 +12,7 @@ import {
 import { randomUUID } from "crypto";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
-const Bucket = process.env.BUCKET_NAME;
+export const Bucket = process.env.BUCKET_NAME;
 
 export const completeMultipart = ({
   ETags,
@@ -62,7 +62,6 @@ export const createMultipart = async (
   directory?: string,
   ACL: "public-read" | "private" = "private"
 ) => {
-  console.log("::ACL_USED::", ACL);
   let Key: `${string}-${string}-${string}-${string}-${string}` | string =
     randomUUID();
   Key = directory ? directory + Key : Key;
@@ -74,6 +73,7 @@ export const createMultipart = async (
       ACL,
     })
   );
+  console.info("::ACL_USED::", ACL);
   if (!UploadId)
     throw new Error("Error trying to create a multipart upload 🚨");
 

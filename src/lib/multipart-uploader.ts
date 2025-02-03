@@ -36,7 +36,6 @@ export const handler = async (
   }
 ) => {
   const { ACL = "private" } = options || {};
-  console.log("::CURRENT_ACL::", ACL);
   // @todo auth?
   const body = await request.json();
 
@@ -54,7 +53,7 @@ export const handler = async (
         })
       );
     case COMPLETE_MULTIPART_STRING:
-      console.log("COMPLETE:: ", body);
+      console.log("COMPLETED:: ", body);
       const completedData = await completeMultipart({
         ETags: body.etags,
         Key: body.key,
@@ -65,6 +64,10 @@ export const handler = async (
         completedData: completedData,
         intent: undefined,
       };
+      // experiment
+      // console.log("::EXPERIMENT::", complete);
+      // const resu = await putObjectACL(complete.Key, "public-read");
+      // console.log("SIIP::", resu);
       // th cb is the DB stuff
       return typeof cb === "function"
         ? cb(complete)
