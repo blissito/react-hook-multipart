@@ -9,12 +9,12 @@ var COMPLETE_MULTIPART_STRING = "complete_multipart_upload";
 // src/lib/client-utils.ts
 var MB = 1024 * 1024;
 var PART_SIZE = 8 * MB;
-var createMultipartUpload = async (handler = "/api/upload", directory) => {
+var createMultipartUpload = async (handler = "/api/upload", fileName) => {
   const init = {
     method: "POST",
     body: JSON.stringify({
       intent: CREATE_MULTIPART_STRING,
-      directory
+      fileName
     }),
     headers: {
       "content-type": "application/json"
@@ -136,7 +136,7 @@ var useUploadMultipart = (options) => {
     onUploadProgress,
     multipart
   } = options || {};
-  const upload = async (directory, file) => {
+  const upload = async (fileName, file) => {
     const metadata = {
       name: file.name,
       size: file.size,
@@ -145,7 +145,7 @@ var useUploadMultipart = (options) => {
     if (!multipart) {
     }
     const numberOfParts = Math.ceil(file.size / PART_SIZE);
-    const { uploadId, key } = await createMultipartUpload(handler, directory);
+    const { uploadId, key } = await createMultipartUpload(handler, fileName);
     const etags = await uploadAllParts({
       file,
       handler,

@@ -59,12 +59,12 @@ export const getPutPartUrl = (options: {
   );
 
 export const createMultipart = async (
-  directory?: string,
+  fileName?: string,
   ACL: "public-read" | "private" = "private"
 ) => {
   let Key: `${string}-${string}-${string}-${string}-${string}` | string =
     randomUUID();
-  Key = directory ? directory + "_" + Key : Key;
+  Key = fileName ? Key + "_" + fileName : Key;
   // await setCors();
   const { UploadId } = await getS3Client().send(
     new CreateMultipartUploadCommand({

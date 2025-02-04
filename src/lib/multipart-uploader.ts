@@ -42,7 +42,7 @@ export const handler = async (
   switch (body.intent) {
     case CREATE_MULTIPART_STRING:
       return new Response(
-        JSON.stringify(await createMultipart(body.directory, ACL))
+        JSON.stringify(await createMultipart(body.fileName, ACL))
       );
     case CREATE_PUT_PART_URL_STRING:
       return new Response(

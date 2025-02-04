@@ -25,7 +25,7 @@ export const useUploadMultipart = (options?: {
     multipart,
   } = options || {};
 
-  const upload = async (directory: string, file: File) => {
+  const upload = async (fileName: string, file: File) => {
     const metadata: FileMetadata = {
       name: file.name,
       size: file.size,
@@ -35,7 +35,7 @@ export const useUploadMultipart = (options?: {
     if (!multipart) {
     }
     const numberOfParts = Math.ceil(file.size / PART_SIZE);
-    const { uploadId, key } = await createMultipartUpload(handler, directory);
+    const { uploadId, key } = await createMultipartUpload(handler, fileName);
     const etags = await uploadAllParts({
       file,
       handler,

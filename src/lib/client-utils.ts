@@ -24,13 +24,13 @@ export const PART_SIZE = 8 * MB;
 
 export const createMultipartUpload = async (
   handler: string = "/api/upload",
-  directory?: string
+  fileName?: string
 ) => {
   const init: RequestInit = {
     method: "POST",
     body: JSON.stringify({
       intent: CREATE_MULTIPART_STRING,
-      directory,
+      fileName,
     }),
     headers: {
       "content-type": "application/json",
