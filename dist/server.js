@@ -12999,7 +12999,7 @@ var getPutPartUrl = (options) => getSignedUrl(
 );
 var createMultipart = async (directory, ACL = "private") => {
   let Key = randomUUID();
-  Key = directory ? directory + Key : Key;
+  Key = directory ? directory + "_" + Key : Key;
   const { UploadId } = await getS3Client().send(
     new CreateMultipartUploadCommand({
       Bucket,
