@@ -13091,7 +13091,6 @@ var handler = async (request2, cb2, options) => {
         })
       );
     case COMPLETE_MULTIPART_STRING:
-      console.log("COMPLETED:: ", body);
       const completedData = await completeMultipart({
         ETags: body.etags,
         Key: body.key,
@@ -13102,6 +13101,7 @@ var handler = async (request2, cb2, options) => {
         completedData,
         intent: void 0
       };
+      console.info("::MULTIPART_COMPLETED:: ", complete);
       return typeof cb2 === "function" ? cb2(complete) : new Response(JSON.stringify(complete));
     default:
       return new Response(null);
