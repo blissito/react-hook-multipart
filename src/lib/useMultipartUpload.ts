@@ -7,13 +7,14 @@ import {
   type UploadCompletedData,
 } from "./client-utils";
 
+type OnUploadProgress = (event: {
+  total: number;
+  loaded: number;
+  percentage: number;
+}) => void;
 // client
 export const useUploadMultipart = (options?: {
-  onUploadProgress?: (event: {
-    total: number;
-    loaded: number;
-    percentage: number;
-  }) => void;
+  onUploadProgress?: OnUploadProgress;
   handler?: string;
   access?: "public-read" | "private";
   multipart?: true;
@@ -25,7 +26,11 @@ export const useUploadMultipart = (options?: {
     multipart,
   } = options || {};
 
-  const upload = async (fileName: string, file: File) => {
+  const upload = async (
+    fileName: string,
+    file: File,
+    progressCb: OnUploadProgress
+  ) => {
     const metadata: FileMetadata = {
       name: file.name,
       size: file.size,
@@ -46,7 +51,7 @@ export const useUploadMultipart = (options?: {
       key,
       numberOfParts,
       uploadId,
-      onUploadProgress,
+      onUploadProgress: progressCb || onUploadProgress,
     });
     const completedData = await completeMultipart({
       access, // just to pass it trhough

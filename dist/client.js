@@ -145,7 +145,7 @@ var useUploadMultipart = (options) => {
     onUploadProgress,
     multipart
   } = options || {};
-  const upload = async (fileName, file) => {
+  const upload = async (fileName, file, progressCb) => {
     const metadata = {
       name: file.name,
       size: file.size,
@@ -165,7 +165,7 @@ var useUploadMultipart = (options) => {
       key,
       numberOfParts,
       uploadId,
-      onUploadProgress
+      onUploadProgress: progressCb || onUploadProgress
     });
     const completedData = await completeMultipart({
       access,
