@@ -13075,12 +13075,13 @@ var COMPLETE_MULTIPART_STRING = "complete_multipart_upload";
 
 // src/lib/multipart-uploader.ts
 var handler = async (request2, cb2, options) => {
-  const { ACL = "private" } = options || {};
+  const { ACL = "private", directory = "" } = options || {};
   const body = await request2.json();
   switch (body.intent) {
     case CREATE_MULTIPART_STRING:
+      const path = directory + body.fileName;
       return new Response(
-        JSON.stringify(await createMultipart(body.fileName, body.access || ACL))
+        JSON.stringify(await createMultipart(path, body.access || ACL))
       );
     case CREATE_PUT_PART_URL_STRING:
       return new Response(

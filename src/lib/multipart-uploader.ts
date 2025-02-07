@@ -33,16 +33,18 @@ export const handler = async (
   cb?: (arg0: Complete) => Promise<Response>,
   options?: {
     ACL: "public-read" | "private";
+    directory: string;
   }
 ) => {
-  const { ACL = "private" } = options || {};
+  const { ACL = "private", directory = "" } = options || {};
   // @todo auth?
   const body = await request.json();
 
   switch (body.intent) {
     case CREATE_MULTIPART_STRING:
+      const path = directory + body.fileName;
       return new Response(
-        JSON.stringify(await createMultipart(body.fileName, body.access || ACL))
+        JSON.stringify(await createMultipart(path, body.access || ACL))
       );
     case CREATE_PUT_PART_URL_STRING:
       return new Response(
