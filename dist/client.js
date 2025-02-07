@@ -110,7 +110,14 @@ var uploadAllParts = async (options) => {
   return await Promise.all(uploadPromises);
 };
 var completeMultipart = async (args) => {
-  const { key, etags, uploadId, metadata, handler = "/api/upload" } = args;
+  const {
+    access,
+    key,
+    etags,
+    uploadId,
+    metadata,
+    handler = "/api/upload"
+  } = args;
   return await retry(async () => {
     const res = await fetch(handler, {
       method: "POST",
@@ -120,6 +127,7 @@ var completeMultipart = async (args) => {
         size: metadata.size,
         metadata,
         uploadId,
+        access,
         etags,
         key
       })
@@ -160,6 +168,8 @@ var useUploadMultipart = (options) => {
       onUploadProgress
     });
     const completedData = await completeMultipart({
+      access,
+      // just to pass it trhough
       metadata,
       key,
       uploadId,
