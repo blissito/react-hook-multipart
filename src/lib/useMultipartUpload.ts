@@ -51,7 +51,7 @@ export const useUploadMultipart = (options?: {
       key,
       numberOfParts,
       uploadId,
-      onUploadProgress: progressCb || onUploadProgress,
+      onUploadProgress: progressCb || onUploadProgress || (() => {}),
     });
     const completedData = await completeMultipart({
       access, // just to pass it trhough
