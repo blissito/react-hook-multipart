@@ -9,12 +9,13 @@ var COMPLETE_MULTIPART_STRING = "complete_multipart_upload";
 // src/lib/client-utils.ts
 var MB = 1024 * 1024;
 var PART_SIZE = 8 * MB;
-var createMultipartUpload = async (handler = "/api/upload", fileName) => {
+var createMultipartUpload = async (handler = "/api/upload", fileName, access = "public-read") => {
   const init = {
     method: "POST",
     body: JSON.stringify({
       intent: CREATE_MULTIPART_STRING,
-      fileName
+      fileName,
+      access
     }),
     headers: {
       "content-type": "application/json"
@@ -130,8 +131,8 @@ var completeMultipart = async (args) => {
 // src/lib/useMultipartUpload.ts
 var useUploadMultipart = (options) => {
   const {
-    access = "public",
-    // @todo implement ACL
+    access = "public-read",
+    // public by default
     handler,
     onUploadProgress,
     multipart
@@ -145,7 +146,11 @@ var useUploadMultipart = (options) => {
     if (!multipart) {
     }
     const numberOfParts = Math.ceil(file.size / PART_SIZE);
-    const { uploadId, key } = await createMultipartUpload(handler, fileName);
+    const { uploadId, key } = await createMultipartUpload(
+      handler,
+      fileName,
+      access
+    );
     const etags = await uploadAllParts({
       file,
       handler,

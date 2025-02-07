@@ -158,13 +158,21 @@ export const uploadAllParts = async (options: {
 };
 
 export const completeMultipart = async (args: {
+  access?: "public-read" | "private";
   key: string;
   uploadId: string;
   etags: string[];
   metadata: FileMetadata;
   handler?: string;
 }) => {
-  const { key, etags, uploadId, metadata, handler = "/api/upload" } = args;
+  const {
+    access,
+    key,
+    etags,
+    uploadId,
+    metadata,
+    handler = "/api/upload",
+  } = args;
   return await retry(async () => {
     const res = await fetch(handler, {
       method: "POST",
@@ -174,6 +182,7 @@ export const completeMultipart = async (args: {
         size: metadata.size,
         metadata,
         uploadId,
+        access,
         etags,
         key,
       }),

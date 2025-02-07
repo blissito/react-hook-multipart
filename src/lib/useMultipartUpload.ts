@@ -49,6 +49,7 @@ export const useUploadMultipart = (options?: {
       onUploadProgress,
     });
     const completedData = await completeMultipart({
+      access, // just to pass it trhough
       metadata,
       key,
       uploadId,

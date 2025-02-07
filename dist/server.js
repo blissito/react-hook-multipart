@@ -13080,7 +13080,7 @@ var handler = async (request2, cb2, options) => {
   switch (body.intent) {
     case CREATE_MULTIPART_STRING:
       return new Response(
-        JSON.stringify(await createMultipart(body.fileName, ACL))
+        JSON.stringify(await createMultipart(body.fileName, body.access || ACL))
       );
     case CREATE_PUT_PART_URL_STRING:
       return new Response(
