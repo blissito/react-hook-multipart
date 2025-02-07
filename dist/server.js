@@ -12999,7 +12999,10 @@ var getPutPartUrl = (options) => getSignedUrl(
 );
 var createMultipart = async (fileName, ACL = "private") => {
   let Key = randomUUID();
-  Key = fileName ? Key + "_" + fileName : Key;
+  if (fileName) {
+    const ext = fileName.split(".")[1];
+    Key = fileName[0] + "_" + Key + ext;
+  }
   const { UploadId } = await getS3Client().send(
     new CreateMultipartUploadCommand({
       Bucket,

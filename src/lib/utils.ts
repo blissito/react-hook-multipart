@@ -64,7 +64,10 @@ export const createMultipart = async (
 ) => {
   let Key: `${string}-${string}-${string}-${string}-${string}` | string =
     randomUUID();
-  Key = fileName ? Key + "_" + fileName : Key;
+  if (fileName) {
+    const ext = fileName.split(".")[1];
+    Key = fileName[0] + "_" + Key + ext; // @todo revisit
+  }
   // await setCors();
   const { UploadId } = await getS3Client().send(
     new CreateMultipartUploadCommand({
