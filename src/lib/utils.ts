@@ -65,8 +65,8 @@ export const createMultipart = async (
   let Key: `${string}-${string}-${string}-${string}-${string}` | string =
     randomUUID();
   if (fileName) {
-    const ext = fileName.split(".")[1];
-    Key = fileName[0] + "_" + Key + ext; // @todo revisit
+    const name = fileName.split(".");
+    Key = name[0] + "_" + Key + name[1]; // @todo revisit
   }
   // await setCors();
   const { UploadId } = await getS3Client().send(
@@ -76,7 +76,6 @@ export const createMultipart = async (
       ACL,
     })
   );
-  console.info("::ACL_USED::", ACL);
   if (!UploadId)
     throw new Error("Error trying to create a multipart upload 🚨");
 
