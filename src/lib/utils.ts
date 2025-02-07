@@ -67,7 +67,7 @@ export const createMultipart = async (
   if (fileName) {
     const name = fileName.split(".");
     const ext = name.pop();
-    Key = name.join(".") + "_" + Key + ext; // @todo revisit
+    Key = name.join(".") + "_" + Key + "." + ext; // @todo revisit
   }
   // await setCors();
   const { UploadId } = await getS3Client().send(

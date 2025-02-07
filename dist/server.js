@@ -13002,7 +13002,7 @@ var createMultipart = async (fileName, ACL = "private") => {
   if (fileName) {
     const name = fileName.split(".");
     const ext = name.pop();
-    Key = name.join(".") + "_" + Key + ext;
+    Key = name.join(".") + "_" + Key + "." + ext;
   }
   const { UploadId } = await getS3Client().send(
     new CreateMultipartUploadCommand({
