@@ -137,12 +137,14 @@ var completeMultipart = async (args) => {
 };
 
 // src/lib/useMultipartUpload.ts
+var noop = () => {
+};
 var useUploadMultipart = (options) => {
   const {
     access = "public-read",
     // public by default
     handler,
-    onUploadProgress,
+    onUploadProgress = noop,
     multipart
   } = options || {};
   const upload = async (fileName, file, progressCb) => {
@@ -165,8 +167,7 @@ var useUploadMultipart = (options) => {
       key,
       numberOfParts,
       uploadId,
-      onUploadProgress: progressCb || onUploadProgress || (() => {
-      })
+      onUploadProgress: progressCb || onUploadProgress
     });
     const completedData = await completeMultipart({
       access,

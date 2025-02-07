@@ -12,6 +12,9 @@ type OnUploadProgress = (event: {
   loaded: number;
   percentage: number;
 }) => void;
+
+const noop = () => {};
+
 // client
 export const useUploadMultipart = (options?: {
   onUploadProgress?: OnUploadProgress;
@@ -22,14 +25,14 @@ export const useUploadMultipart = (options?: {
   const {
     access = "public-read", // public by default
     handler,
-    onUploadProgress,
+    onUploadProgress = noop,
     multipart,
   } = options || {};
 
   const upload = async (
     fileName: string,
     file: File,
-    progressCb: OnUploadProgress
+    progressCb?: OnUploadProgress
   ) => {
     const metadata: FileMetadata = {
       name: file.name,
@@ -51,7 +54,7 @@ export const useUploadMultipart = (options?: {
       key,
       numberOfParts,
       uploadId,
-      onUploadProgress: progressCb || onUploadProgress || (() => {}),
+      onUploadProgress: progressCb || onUploadProgress,
     });
     const completedData = await completeMultipart({
       access, // just to pass it trhough
