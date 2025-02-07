@@ -24,13 +24,15 @@ export const PART_SIZE = 8 * MB;
 
 export const createMultipartUpload = async (
   handler: string = "/api/upload",
-  fileName?: string
+  fileName?: string,
+  access: "public-read" | "private" = "public-read"
 ) => {
   const init: RequestInit = {
     method: "POST",
     body: JSON.stringify({
       intent: CREATE_MULTIPART_STRING,
       fileName,
+      access,
     }),
     headers: {
       "content-type": "application/json",

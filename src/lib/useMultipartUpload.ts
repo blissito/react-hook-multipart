@@ -15,11 +15,11 @@ export const useUploadMultipart = (options?: {
     percentage: number;
   }) => void;
   handler?: string;
-  access?: "public";
+  access?: "public-read" | "private";
   multipart?: true;
 }) => {
   const {
-    access = "public", // @todo implement ACL
+    access = "public-read", // public by default
     handler,
     onUploadProgress,
     multipart,
@@ -35,7 +35,11 @@ export const useUploadMultipart = (options?: {
     if (!multipart) {
     }
     const numberOfParts = Math.ceil(file.size / PART_SIZE);
-    const { uploadId, key } = await createMultipartUpload(handler, fileName);
+    const { uploadId, key } = await createMultipartUpload(
+      handler,
+      fileName,
+      access
+    );
     const etags = await uploadAllParts({
       file,
       handler,
