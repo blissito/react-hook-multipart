@@ -13047,13 +13047,13 @@ var fileExist = (Key) => {
     return false;
   });
 };
-var getPutFileUrl = (Key) => getSignedUrl(
+var getPutFileUrl = (Key, expiresIn = 900) => getSignedUrl(
   getS3Client(),
   new PutObjectCommand({
     Bucket,
     Key
   }),
-  { expiresIn: 3600 }
+  { expiresIn }
 );
 var getDeleteFileUrl = async (Key) => getSignedUrl(
   getS3Client(),

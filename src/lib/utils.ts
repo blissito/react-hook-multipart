@@ -126,14 +126,14 @@ export const fileExist = (Key: string) => {
     });
 };
 
-export const getPutFileUrl = (Key: string) =>
+export const getPutFileUrl = (Key: string, expiresIn: number = 900) =>
   getSignedUrl(
     getS3Client(),
     new PutObjectCommand({
       Bucket,
       Key,
     }),
-    { expiresIn: 3600 }
+    { expiresIn }
   );
 
 export const getDeleteFileUrl = async (Key: string) =>
