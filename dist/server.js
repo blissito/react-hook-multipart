@@ -13024,11 +13024,11 @@ var deleteObject = (Key) => getS3Client().send(
     Key
   })
 );
-var getReadURL = (Key, expiresIn = 3600, options) => getSignedUrl(
+var getReadURL = (Key, expiresIn = 900) => getSignedUrl(
   getS3Client(),
   new GetObjectCommand({
     Key,
-    Bucket: options?.Bucket || Bucket
+    Bucket
   }),
   { expiresIn }
   // seconds
