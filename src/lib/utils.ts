@@ -173,7 +173,7 @@ let s3Client: S3Client;
 
 export function getS3Client() {
   s3Client ??= new S3Client({
-    region: process.env.AWS_REGION,
+    region: process.env.AWS_REGION || "auto",
     endpoint: process.env.AWS_ENDPOINT_URL_S3,
   });
   return s3Client;

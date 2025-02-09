@@ -13024,13 +13024,14 @@ var deleteObject = (Key) => getS3Client().send(
     Key
   })
 );
-var getReadURL = (Key, expiresIn = 3600) => getSignedUrl(
+var getReadURL = (Key, expiresIn = 3600, options) => getSignedUrl(
   getS3Client(),
   new GetObjectCommand({
-    Bucket,
-    Key
+    Key,
+    Bucket: options?.Bucket || Bucket
   }),
   { expiresIn }
+  // seconds
 );
 var fileExist = (Key) => {
   return getS3Client().send(
@@ -13065,7 +13066,7 @@ var getDeleteFileUrl = async (Key) => getSignedUrl(
 var s3Client;
 function getS3Client() {
   s3Client ??= new S3Client({
-    region: process.env.AWS_REGION,
+    region: process.env.AWS_REGION || "auto",
     endpoint: process.env.AWS_ENDPOINT_URL_S3
   });
   return s3Client;

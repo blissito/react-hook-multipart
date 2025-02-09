@@ -9,7 +9,7 @@ var COMPLETE_MULTIPART_STRING = "complete_multipart_upload";
 // src/lib/client-utils.ts
 var MB = 1024 * 1024;
 var PART_SIZE = 8 * MB;
-var createMultipartUpload = async (handler = "/api/upload", fileName, access = "public-read") => {
+var createMultipartUpload = async (handler = "/api/upload", fileName, access = "public-read", options) => {
   const init = {
     method: "POST",
     body: JSON.stringify({
@@ -19,7 +19,8 @@ var createMultipartUpload = async (handler = "/api/upload", fileName, access = "
     }),
     headers: {
       "content-type": "application/json"
-    }
+    },
+    signal: options?.abortSignal
   };
   let response;
   try {
@@ -54,14 +55,16 @@ var getPutPartUrl = async ({
 var uploadOnePartRetry = async ({
   attempts = 1,
   url,
-  blob
+  blob,
+  options
 }) => {
   let retryCount = 0;
   return await retry(
     async (bail) => {
       const response = await fetch(url, {
         method: "PUT",
-        body: blob
+        body: blob,
+        signal: options?.abortSignal
       });
       if (403 === response.status) {
         bail(new Error("Unauthorized"));
@@ -111,15 +114,17 @@ var uploadAllParts = async (options) => {
 };
 var completeMultipart = async (args) => {
   const {
-    access,
     key,
     etags,
+    signal,
+    access,
     uploadId,
     metadata,
     handler = "/api/upload"
   } = args;
   return await retry(async () => {
     const res = await fetch(handler, {
+      signal,
       method: "POST",
       body: JSON.stringify({
         intent: COMPLETE_MULTIPART_STRING,
