@@ -7,6 +7,44 @@ import {
   type UploadCompletedData,
 } from "./client-utils";
 
+// shared interface for multipartUpload
+export interface UploadOptions {
+  /**
+   * Define your S3 secrets.
+   * AWS_REGION = "auto";
+   * AWS_ENDPOINT_URL_S3 = "https://fly.storage.tigris.dev";
+   * BUCKET_NAME = "blissmo-bucket";
+   * AWS_ACCESS_KEY_ID = "Tu access key";
+   * AWS_SECRET_ACCESS_KEY = "Tu secret";
+   * @defaultvalue process.env.EASYBITS_SECRET
+   */
+  easyBitsSecret?: string;
+  /**
+   * `AbortSignal` to cancel the running request. See https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal
+   */
+  abortSignal?: AbortSignal;
+  /**
+   * Whether the file should be publicly accessible.
+   * I'm following the ACL string values 'private' | 'public-read'
+   */
+  access: "public-read";
+  /**
+   * Adds a random uuid to the filename.
+   * @defaultvalue true
+   */
+  addUuid?: boolean;
+  /**
+   * Defines the 'content-type' header when downloading a file.
+   */
+  contentType?: string;
+  /**
+   * Number in seconds to configure the edge and browser cache. The maximum values are 5 minutes for the edge cache and unlimited for the browser cache.
+   *
+   * @defaultvalue 365 * 24 * 60 * 60 (1 Year)
+   */
+  cacheControlMaxAge?: number;
+}
+
 type OnUploadProgress = (event: {
   total: number;
   loaded: number;

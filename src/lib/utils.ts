@@ -101,7 +101,7 @@ export const getReadURL = (Key: string, expiresIn = 3600) =>
       Bucket,
       Key,
     }),
-    { expiresIn }
+    { expiresIn } // seconds
   );
 
 export const fileExist = (Key: string) => {

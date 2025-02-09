@@ -4,7 +4,10 @@
 
 Is a fast and efficient hook for upload big files with multipart streams in a SSR React environment.
 
-I'm currently working on implementing Web Streams 🚬👷🏼
+> 👀 It will split the file into multiple parts, upload them in parallel and retry failed parts.
+
+I'm currently working on implementing Web Streams 🚬👷🏼 Al final, creo que no implementaré streams. Lo que estoy haciendo con el `slice()` del blob es suficientemente compatible.
+Mejor me concentro en el abort signal...
 
 Install it like so:
 
@@ -70,6 +73,7 @@ const { upload } = useUploadMultipart({
   onUploadProgress({ percentage }) {
     setProgress(percentage); // your own state ✅
   },
+  access: "public-read", // or private
   handler: "/api/upload", // your own resource route ㊮
   signal: new AbortController(), // @todo about to implement... 👷🏼‍♂️
 });
@@ -81,6 +85,19 @@ const handleUpload = async (event) => {
 ```
 
 You can use `try{}catch(){}` blocks to capture any error.
+
+```ts
+// ...
+const [progress, setProgress] = useState(0);
+
+const putFile = async (file: File) => {
+  await upload(file.name, file, ({ percentage }) => setProgress(percentage));
+  //                                     ^ you can pass any function to update the progress
+};
+// ...
+```
+
+You can also pass the progress handler as the third paramether to the upload function.
 
 ## Underneath
 

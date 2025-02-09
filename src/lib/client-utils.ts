@@ -4,6 +4,7 @@ import {
   COMPLETE_MULTIPART_STRING,
   CREATE_PUT_PART_URL_STRING,
 } from "./constants";
+import type { UploadOptions } from "./useMultipartUpload";
 
 export type UploadCompletedData = {
   uploadId: string;
@@ -25,7 +26,8 @@ export const PART_SIZE = 8 * MB;
 export const createMultipartUpload = async (
   handler: string = "/api/upload",
   fileName?: string,
-  access: "public-read" | "private" = "public-read"
+  access: "public-read" | "private" = "public-read",
+  options?: UploadOptions
 ) => {
   const init: RequestInit = {
     method: "POST",
@@ -37,6 +39,7 @@ export const createMultipartUpload = async (
     headers: {
       "content-type": "application/json",
     },
+    signal: options?.abortSignal,
   };
   let response;
   try {
@@ -81,7 +84,9 @@ const uploadOnePartRetry = async ({
   attempts = 1,
   url,
   blob,
+  options,
 }: {
+  options?: UploadOptions;
   url: string;
   blob: Blob;
   attempts?: number;
@@ -92,6 +97,7 @@ const uploadOnePartRetry = async ({
       const response = await fetch(url, {
         method: "PUT",
         body: blob,
+        signal: options?.abortSignal,
       });
       // @todo abort and content-type?
       if (403 === response.status) {
@@ -164,17 +170,20 @@ export const completeMultipart = async (args: {
   etags: string[];
   metadata: FileMetadata;
   handler?: string;
+  signal?: AbortSignal;
 }) => {
   const {
-    access,
     key,
     etags,
+    signal,
+    access,
     uploadId,
     metadata,
     handler = "/api/upload",
   } = args;
   return await retry(async () => {
     const res = await fetch(handler, {
+      signal,
       method: "POST",
       body: JSON.stringify({
         intent: COMPLETE_MULTIPART_STRING,
