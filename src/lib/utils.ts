@@ -94,12 +94,16 @@ export const deleteObject = (Key: string) =>
     })
   );
 
-export const getReadURL = (Key: string, expiresIn = 3600) =>
+export const getReadURL = (
+  Key: string,
+  expiresIn = 3600,
+  options?: { Bucket: string }
+) =>
   getSignedUrl(
     getS3Client(),
     new GetObjectCommand({
-      Bucket,
       Key,
+      Bucket: options?.Bucket || Bucket,
     }),
     { expiresIn } // seconds
   );
