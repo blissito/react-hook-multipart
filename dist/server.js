@@ -12966,6 +12966,7 @@ var getSignedUrl = async (client, command, options = {}) => {
 
 // src/lib/utils.ts
 var Bucket = process.env.BUCKET_NAME;
+console.info("BUCKET_NAME", Bucket);
 var completeMultipart = ({
   ETags,
   UploadId,
