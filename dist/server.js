@@ -5087,9 +5087,9 @@ var deleteObject = (Key) => getS3Client().send(
   })
 );
 var globalBucket = Bucket;
-var getReadURL = (Key, expiresIn = 900, options) => {
-  const { Bucket: Bucket2 = globalBucket } = options || {};
-  getSignedUrl(
+var getReadURL = (Key, expiresIn = 900, options = {}) => {
+  const { Bucket: Bucket2 = globalBucket } = options;
+  return getSignedUrl(
     getS3Client(),
     new GetObjectCommand({
       Key,
