@@ -97,7 +97,13 @@ export const deleteObject = (Key: string) =>
     })
   );
 
-export const getReadURL = (Key: string, expiresIn = 900) =>
+const globalBucket = Bucket;
+export const getReadURL = (
+  Key: string,
+  expiresIn = 900,
+  options: { Bucket?: string }
+) => {
+  const { Bucket = globalBucket } = options || {};
   getSignedUrl(
     getS3Client(),
     new GetObjectCommand({
@@ -106,6 +112,7 @@ export const getReadURL = (Key: string, expiresIn = 900) =>
     }),
     { expiresIn } // seconds
   );
+};
 
 export const fileExist = (Key: string) => {
   return getS3Client()
