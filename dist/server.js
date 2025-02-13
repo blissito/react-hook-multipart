@@ -5086,15 +5086,19 @@ var deleteObject = (Key) => getS3Client().send(
     Key
   })
 );
-var getReadURL = (Key, expiresIn = 900) => getSignedUrl(
-  getS3Client(),
-  new GetObjectCommand({
-    Key,
-    Bucket
-  }),
-  { expiresIn }
-  // seconds
-);
+var globalBucket = Bucket;
+var getReadURL = (Key, expiresIn = 900, options) => {
+  const { Bucket: Bucket2 = globalBucket } = options || {};
+  getSignedUrl(
+    getS3Client(),
+    new GetObjectCommand({
+      Key,
+      Bucket: Bucket2
+    }),
+    { expiresIn }
+    // seconds
+  );
+};
 var fileExist = (Key) => {
   return getS3Client().send(
     new HeadObjectCommand({

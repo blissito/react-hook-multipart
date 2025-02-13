@@ -101,10 +101,10 @@ const globalBucket = Bucket;
 export const getReadURL = (
   Key: string,
   expiresIn = 900,
-  options: { Bucket?: string }
+  options: { Bucket?: string } = {}
 ) => {
-  const { Bucket = globalBucket } = options || {};
-  getSignedUrl(
+  const { Bucket = globalBucket } = options;
+  return getSignedUrl(
     getS3Client(),
     new GetObjectCommand({
       Key,
