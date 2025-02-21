@@ -5372,7 +5372,6 @@ var getSignedUrl = async (client, command, options = {}) => {
 import dotenv from "dotenv";
 dotenv.config();
 var Bucket = process.env.BUCKET_NAME;
-console.info("BUCKET_NAME", Bucket);
 var deleteObjects = (keys, Objects) => {
   const command = new DeleteObjectsCommand({
     Bucket,
