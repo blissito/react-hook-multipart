@@ -4,11 +4,11 @@ import {
   CreateMultipartUploadCommand,
   UploadPartCommand,
   CompleteMultipartUploadCommand,
+  DeleteObjectCommand,
   DeleteObjectsCommand,
   GetObjectCommand,
   HeadObjectCommand,
   PutObjectCommand,
-  DeleteObjectCommand,
   ListObjectsV2Command,
 } from "@aws-sdk/client-s3";
 import { randomUUID } from "crypto";
@@ -17,7 +17,6 @@ import dotenv from "dotenv"; // revisit
 dotenv.config();
 
 export const Bucket = process.env.BUCKET_NAME;
-console.info("BUCKET_NAME", Bucket);
 
 export const deleteObjects = (keys: string[], Objects?: { Key: string }[]) => {
   const command = new DeleteObjectsCommand({
