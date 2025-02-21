@@ -1,5 +1,5 @@
 {
-  "version": "0.0.46",
+  "version": "0.0.47",
   "type": "module",
   "description": "A fast, efficient hook for upload big files with multipart streams in a React environment",
   "author": "Héctorbliss <fixtergeek@gmail.com>",
@@ -11,8 +11,8 @@
   "homepage": "https://github.com/blissito/react-hook-multipart/tree/main/react-hook-multipart#readme",
   "name": "react-hook-multipart",
   "exports": {
-    ".": "./dist/server/server.js",
-    "./react": "./dist/client/client.js"
+    ".": "./dist/server.js",
+    "./react": "./dist/client.js"
   },
   "files": [
     "dist",
