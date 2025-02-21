@@ -9,25 +9,26 @@ import "./chunk-C3BIZR4K.js";
 import {
   CredentialsProviderError,
   chain
-} from "./chunk-YFT7YJIX.js";
+} from "./chunk-CLEJCFJR.js";
+import "./chunk-JSBRDJBE.js";
 
 // node_modules/@aws-sdk/credential-provider-ini/dist-es/resolveCredentialSource.js
 var resolveCredentialSource = (credentialSource, profileName, logger) => {
   const sourceProvidersMap = {
     EcsContainer: async (options) => {
-      const { fromHttp } = await import("./dist-es-4KFWOMFF.js");
-      const { fromContainerMetadata } = await import("./dist-es-7JSGNQV5.js");
+      const { fromHttp } = await import("./dist-es-FGWXNJO3.js");
+      const { fromContainerMetadata } = await import("./dist-es-K45HLY7B.js");
       logger?.debug("@aws-sdk/credential-provider-ini - credential_source is EcsContainer");
       return async () => chain(fromHttp(options ?? {}), fromContainerMetadata(options))().then(setNamedProvider);
     },
     Ec2InstanceMetadata: async (options) => {
       logger?.debug("@aws-sdk/credential-provider-ini - credential_source is Ec2InstanceMetadata");
-      const { fromInstanceMetadata } = await import("./dist-es-7JSGNQV5.js");
+      const { fromInstanceMetadata } = await import("./dist-es-K45HLY7B.js");
       return async () => fromInstanceMetadata(options)().then(setNamedProvider);
     },
     Environment: async (options) => {
       logger?.debug("@aws-sdk/credential-provider-ini - credential_source is Environment");
-      const { fromEnv } = await import("./dist-es-PIBV6HCI.js");
+      const { fromEnv } = await import("./dist-es-NNQHC2RA.js");
       return async () => fromEnv(options)().then(setNamedProvider);
     }
   };
@@ -62,7 +63,7 @@ var resolveAssumeRoleCredentials = async (profileName, profiles, options, visite
   const profileData = profiles[profileName];
   const { source_profile, region } = profileData;
   if (!options.roleAssumer) {
-    const { getDefaultRoleAssumer } = await import("./sts-LIKZBVCA.js");
+    const { getDefaultRoleAssumer } = await import("./sts-YEAMWK6R.js");
     options.roleAssumer = getDefaultRoleAssumer({
       ...options.clientConfig,
       credentialProviderLogger: options.logger,
@@ -107,14 +108,14 @@ var isCredentialSourceWithoutRoleArn = (section) => {
 
 // node_modules/@aws-sdk/credential-provider-ini/dist-es/resolveProcessCredentials.js
 var isProcessProfile = (arg) => Boolean(arg) && typeof arg === "object" && typeof arg.credential_process === "string";
-var resolveProcessCredentials = async (options, profile) => import("./dist-es-CVV7SH2U.js").then(({ fromProcess }) => fromProcess({
+var resolveProcessCredentials = async (options, profile) => import("./dist-es-6Y2CHNYQ.js").then(({ fromProcess }) => fromProcess({
   ...options,
   profile
 })().then((creds) => setCredentialFeature(creds, "CREDENTIALS_PROFILE_PROCESS", "v")));
 
 // node_modules/@aws-sdk/credential-provider-ini/dist-es/resolveSsoCredentials.js
 var resolveSsoCredentials = async (profile, profileData, options = {}) => {
-  const { fromSSO } = await import("./dist-es-ZFEAAHIU.js");
+  const { fromSSO } = await import("./dist-es-ULE224CB.js");
   return fromSSO({
     profile,
     logger: options.logger,
@@ -146,7 +147,7 @@ var resolveStaticCredentials = async (profile, options) => {
 
 // node_modules/@aws-sdk/credential-provider-ini/dist-es/resolveWebIdentityCredentials.js
 var isWebIdentityProfile = (arg) => Boolean(arg) && typeof arg === "object" && typeof arg.web_identity_token_file === "string" && typeof arg.role_arn === "string" && ["undefined", "string"].indexOf(typeof arg.role_session_name) > -1;
-var resolveWebIdentityCredentials = async (profile, options) => import("./dist-es-OF653RNE.js").then(({ fromTokenFile }) => fromTokenFile({
+var resolveWebIdentityCredentials = async (profile, options) => import("./dist-es-VCVJC3SM.js").then(({ fromTokenFile }) => fromTokenFile({
   webIdentityTokenFile: profile.web_identity_token_file,
   roleArn: profile.role_arn,
   roleSessionName: profile.role_session_name,

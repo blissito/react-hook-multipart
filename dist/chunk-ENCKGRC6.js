@@ -1,7 +1,7 @@
 import {
   loadConfig,
   parseUrl
-} from "./chunk-GZGP43GC.js";
+} from "./chunk-HVR5STFB.js";
 import {
   HttpRequest,
   HttpResponse,
@@ -29,7 +29,7 @@ import {
 import {
   ProviderError,
   memoize
-} from "./chunk-YFT7YJIX.js";
+} from "./chunk-CLEJCFJR.js";
 
 // node_modules/@smithy/util-middleware/dist-es/getSmithyContext.js
 var getSmithyContext = (context) => context[SMITHY_CONTEXT_KEY] || (context[SMITHY_CONTEXT_KEY] = {});
@@ -3099,7 +3099,7 @@ var inferPhysicalRegion = async () => {
   }
   if (!process.env[ENV_IMDS_DISABLED]) {
     try {
-      const { getInstanceMetadataEndpoint, httpRequest } = await import("./dist-es-7JSGNQV5.js");
+      const { getInstanceMetadataEndpoint, httpRequest } = await import("./dist-es-K45HLY7B.js");
       const endpoint = await getInstanceMetadataEndpoint();
       return (await httpRequest({ ...endpoint, path: IMDS_REGION_PATH })).toString();
     } catch (e) {

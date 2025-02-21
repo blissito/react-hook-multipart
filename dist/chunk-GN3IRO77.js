@@ -1,6 +1,6 @@
 import {
   collectBodyString
-} from "./chunk-ZK3NUXIP.js";
+} from "./chunk-ENCKGRC6.js";
 
 // node_modules/@aws-sdk/core/dist-es/submodules/protocols/json/parseJsonBody.js
 var parseJsonBody = (streamBody, context) => collectBodyString(streamBody, context).then((encoded) => {

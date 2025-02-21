@@ -1,7 +1,7 @@
 import {
   parseXmlBody,
   parseXmlErrorBody
-} from "./chunk-NQ7P7QKK.js";
+} from "./chunk-IN4WSVCK.js";
 import {
   package_default
 } from "./chunk-ZQ5ZNI3K.js";
@@ -46,11 +46,11 @@ import {
   resolveRegionConfig,
   resolveRetryConfig,
   resolveUserAgentConfig
-} from "./chunk-ZK3NUXIP.js";
+} from "./chunk-ENCKGRC6.js";
 import {
   loadConfig,
   parseUrl
-} from "./chunk-GZGP43GC.js";
+} from "./chunk-HVR5STFB.js";
 import {
   Client,
   Command,
@@ -84,7 +84,8 @@ import {
   setCredentialFeature
 } from "./chunk-FZCCKB7Z.js";
 import "./chunk-C3BIZR4K.js";
-import "./chunk-YFT7YJIX.js";
+import "./chunk-CLEJCFJR.js";
+import "./chunk-JSBRDJBE.js";
 
 // node_modules/@aws-sdk/nested-clients/dist-es/submodules/sts/auth/httpAuthSchemeProvider.js
 var defaultSTSHttpAuthSchemeParametersProvider = async (config, context, input) => {

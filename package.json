@@ -1,5 +1,5 @@
 {
-  "version": "0.0.45",
+  "version": "0.0.46",
   "type": "module",
   "description": "A fast, efficient hook for upload big files with multipart streams in a React environment",
   "author": "Héctorbliss <fixtergeek@gmail.com>",
@@ -11,8 +11,8 @@
   "homepage": "https://github.com/blissito/react-hook-multipart/tree/main/react-hook-multipart#readme",
   "name": "react-hook-multipart",
   "exports": {
-    ".": "./dist/server.js",
-    "./react": "./dist/client.js"
+    ".": "./dist/server/server.js",
+    "./react": "./dist/client/client.js"
   },
   "files": [
     "dist",
@@ -39,9 +39,8 @@
     "typescript": "^5.7.3"
   },
   "scripts": {
-    "build": "pnpm build:client && pnpm build:server",
-    "build:server": "tsup ./src/server.ts --format esm",
-    "build:client": "tsup ./src/client.tsx --format esm",
+    "build": "pnpm build:all",
+    "build:all": "tsup ./src/server.ts ./src/client.tsx --format esm",
     "dev": "tsup ./src/server.ts --format esm --watch",
     "prepare": "pnpm build"
   },

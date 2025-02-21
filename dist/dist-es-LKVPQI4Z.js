@@ -3,14 +3,15 @@ import {
   NodeHttpHandler,
   parseRfc3339DateTime,
   sdkStreamMixin
-} from "./chunk-6YUZF75W.js";
+} from "./chunk-SVASSJ7L.js";
 import {
   setCredentialFeature
 } from "./chunk-FZCCKB7Z.js";
 import "./chunk-C3BIZR4K.js";
 import {
   CredentialsProviderError
-} from "./chunk-YFT7YJIX.js";
+} from "./chunk-CLEJCFJR.js";
+import "./chunk-JSBRDJBE.js";
 
 // node_modules/@aws-sdk/credential-provider-http/dist-es/fromHttp/fromHttp.js
 import fs from "fs/promises";

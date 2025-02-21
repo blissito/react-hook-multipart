@@ -3,7 +3,8 @@ import {
 } from "./chunk-FZCCKB7Z.js";
 import {
   CredentialsProviderError
-} from "./chunk-YFT7YJIX.js";
+} from "./chunk-CLEJCFJR.js";
+import "./chunk-JSBRDJBE.js";
 
 // node_modules/@aws-sdk/credential-provider-web-identity/dist-es/fromTokenFile.js
 import { readFileSync } from "fs";
@@ -14,7 +15,7 @@ var fromWebToken = (init) => async (awsIdentityProperties) => {
   const { roleArn, roleSessionName, webIdentityToken, providerId, policyArns, policy, durationSeconds } = init;
   let { roleAssumerWithWebIdentity } = init;
   if (!roleAssumerWithWebIdentity) {
-    const { getDefaultRoleAssumerWithWebIdentity } = await import("./sts-LIKZBVCA.js");
+    const { getDefaultRoleAssumerWithWebIdentity } = await import("./sts-S747ONTY.js");
     roleAssumerWithWebIdentity = getDefaultRoleAssumerWithWebIdentity({
       ...init.clientConfig,
       credentialProviderLogger: init.logger,

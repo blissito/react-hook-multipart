@@ -12,7 +12,8 @@ import "./chunk-C3BIZR4K.js";
 import {
   CredentialsProviderError,
   TokenProviderError
-} from "./chunk-YFT7YJIX.js";
+} from "./chunk-CLEJCFJR.js";
+import "./chunk-JSBRDJBE.js";
 
 // node_modules/@aws-sdk/credential-provider-sso/dist-es/isSsoProfile.js
 var isSsoProfile = (arg) => arg && (typeof arg.sso_start_url === "string" || typeof arg.sso_account_id === "string" || typeof arg.sso_session === "string" || typeof arg.sso_region === "string" || typeof arg.sso_role_name === "string");
@@ -23,7 +24,7 @@ var REFRESH_MESSAGE = `To refresh this SSO session run 'aws sso login' with the 
 
 // node_modules/@aws-sdk/token-providers/dist-es/getSsoOidcClient.js
 var getSsoOidcClient = async (ssoRegion, init = {}) => {
-  const { SSOOIDCClient } = await import("./sso-oidc-2Q2K5ZIY.js");
+  const { SSOOIDCClient } = await import("./sso-oidc-6W5Q4GVQ.js");
   const ssoOidcClient = new SSOOIDCClient(Object.assign({}, init.clientConfig ?? {}, {
     region: ssoRegion ?? init.clientConfig?.region,
     logger: init.clientConfig?.logger ?? init.parentClientConfig?.logger
@@ -33,7 +34,7 @@ var getSsoOidcClient = async (ssoRegion, init = {}) => {
 
 // node_modules/@aws-sdk/token-providers/dist-es/getNewSsoOidcToken.js
 var getNewSsoOidcToken = async (ssoToken, ssoRegion, init = {}) => {
-  const { CreateTokenCommand } = await import("./sso-oidc-2Q2K5ZIY.js");
+  const { CreateTokenCommand } = await import("./sso-oidc-6W5Q4GVQ.js");
   const ssoOidcClient = await getSsoOidcClient(ssoRegion, init);
   return ssoOidcClient.send(new CreateTokenCommand({
     clientId: ssoToken.clientId,
@@ -180,7 +181,7 @@ var resolveSSOCredentials = async ({ ssoStartUrl, ssoSession, ssoAccountId, ssoR
     });
   }
   const { accessToken } = token;
-  const { SSOClient, GetRoleCredentialsCommand } = await import("./loadSso-D7AJRCQN.js");
+  const { SSOClient, GetRoleCredentialsCommand } = await import("./loadSso-ZT2HANM4.js");
   const sso = ssoClient || new SSOClient(Object.assign({}, clientConfig ?? {}, {
     logger: clientConfig?.logger ?? parentClientConfig?.logger,
     region: clientConfig?.region ?? ssoRegion

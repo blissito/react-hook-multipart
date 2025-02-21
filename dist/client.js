@@ -1,12 +1,12 @@
+import {
+  COMPLETE_MULTIPART_STRING,
+  CREATE_MULTIPART_STRING,
+  CREATE_PUT_PART_URL_STRING
+} from "./chunk-VHLUS35K.js";
+import "./chunk-JSBRDJBE.js";
+
 // src/lib/client-utils.ts
 import retry from "async-retry";
-
-// src/lib/constants.ts
-var CREATE_MULTIPART_STRING = "create_multipart_upload";
-var CREATE_PUT_PART_URL_STRING = "create_put_part_url";
-var COMPLETE_MULTIPART_STRING = "complete_multipart_upload";
-
-// src/lib/client-utils.ts
 var MB = 1024 * 1024;
 var PART_SIZE = 8 * MB;
 var createMultipartUpload = async (handler = "/api/upload", fileName, access = "public-read", options) => {

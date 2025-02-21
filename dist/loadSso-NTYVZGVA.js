@@ -2,7 +2,7 @@ import {
   loadRestJsonErrorCode,
   parseJsonBody,
   parseJsonErrorBody
-} from "./chunk-IUBG4GCC.js";
+} from "./chunk-JI454TVT.js";
 import {
   AwsSdkSigV4Signer,
   DEFAULT_RETRY_MODE,
@@ -44,11 +44,11 @@ import {
   resolveRegionConfig,
   resolveRetryConfig,
   resolveUserAgentConfig
-} from "./chunk-ZK3NUXIP.js";
+} from "./chunk-2URGDOXH.js";
 import {
   loadConfig,
   parseUrl
-} from "./chunk-GZGP43GC.js";
+} from "./chunk-HVR5STFB.js";
 import {
   Client,
   Command,
@@ -77,11 +77,12 @@ import {
   toBase64,
   toUtf8,
   withBaseException
-} from "./chunk-6YUZF75W.js";
+} from "./chunk-SVASSJ7L.js";
 import "./chunk-AGSJSKE7.js";
 import "./chunk-FZCCKB7Z.js";
 import "./chunk-C3BIZR4K.js";
-import "./chunk-YFT7YJIX.js";
+import "./chunk-CLEJCFJR.js";
+import "./chunk-JSBRDJBE.js";
 
 // node_modules/@aws-sdk/client-sso/dist-es/auth/httpAuthSchemeProvider.js
 var defaultSSOHttpAuthSchemeParametersProvider = async (config, context, input) => {

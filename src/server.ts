@@ -6,7 +6,7 @@ export {
   getS3Client,
   getPutFileUrl,
   getDeleteFileUrl,
-  // listObjectsInFolder,
-  // deleteObjects,
+  listObjectsInFolder,
+  deleteObjects,
 } from "./lib/utils";
 export type { Complete } from "./lib/multipart-uploader";
