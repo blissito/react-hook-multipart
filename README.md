@@ -99,6 +99,35 @@ const putFile = async (file: File) => {
 
 You can also pass the progress handler as the third paramether to the upload function.
 
+## Important!
+
+You may want to externalize the dependency in `vite.config` file.
+
+```js
+import { reactRouter } from "@react-router/dev/vite";
+import autoprefixer from "autoprefixer";
+import tailwindcss from "tailwindcss";
+import { defineConfig } from "vite";
+import tsconfigPaths from "vite-tsconfig-paths";
+
+export default defineConfig({
+  server: { port: 3000 },
+  css: {
+    postcss: {
+      plugins: [tailwindcss, autoprefixer],
+    },
+  },
+  plugins: [reactRouter(), tsconfigPaths()],
+  build: {
+    rollupOptions: {
+      // make sure to externalize deps that shouldn't be bundled
+      // into your library
+      external: ["react-hook-multipart"], // <= here
+    },
+  },
+});
+```
+
 ## Underneath
 
 This package uses `@aws-sdk/s3-request-presigner` and `@aws-sdk/client-s3` underneath.
