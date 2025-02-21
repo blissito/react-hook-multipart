@@ -8,6 +8,7 @@ import {
   GetObjectCommand,
   HeadObjectCommand,
   PutObjectCommand,
+  ListObjectsV2Command,
 } from "@aws-sdk/client-s3";
 import { randomUUID } from "crypto";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
@@ -16,6 +17,9 @@ dotenv.config();
 
 export const Bucket = process.env.BUCKET_NAME;
 console.info("BUCKET_NAME", Bucket);
+
+export const listObjectsInFolder = (Prefix: string) =>
+  getS3Client().send(new ListObjectsV2Command({ Bucket, Prefix }));
 
 export const completeMultipart = ({
   ETags,
