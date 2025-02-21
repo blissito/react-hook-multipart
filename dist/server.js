@@ -2846,26 +2846,30 @@ var se_CreateSessionCommand = async (input, context) => {
   b2.m("GET").h(headers).q(query).b(body);
   return b2.build();
 };
-var se_DeleteObjectCommand = async (input, context) => {
+var se_DeleteObjectsCommand = async (input, context) => {
   const b2 = requestBuilder(input, context);
   const headers = map({}, isSerializableHeaderValue, {
+    "content-type": "application/xml",
     [_xam]: input[_MFA],
     [_xarp]: input[_RP],
     [_xabgr]: [() => isSerializableHeaderValue(input[_BGR]), () => input[_BGR].toString()],
     [_xaebo]: input[_EBO],
-    [_im]: input[_IM],
-    [_xaimlmt]: [() => isSerializableHeaderValue(input[_IMLMT]), () => dateToUtcString(input[_IMLMT]).toString()],
-    [_xaims]: [() => isSerializableHeaderValue(input[_IMS]), () => input[_IMS].toString()]
+    [_xasca]: input[_CA]
   });
-  b2.bp("/{Key+}");
+  b2.bp("/");
   b2.p("Bucket", () => input.Bucket, "{Bucket}", false);
-  b2.p("Key", () => input.Key, "{Key+}", true);
   const query = map({
-    [_xi]: [, "DeleteObject"],
-    [_vI]: [, input[_VI]]
+    [_d]: [, ""]
   });
   let body;
-  b2.m("DELETE").h(headers).q(query).b(body);
+  let contents;
+  if (input.Delete !== void 0) {
+    contents = se_Delete(input.Delete, context);
+    body = _ve;
+    contents.a("xmlns", "http://s3.amazonaws.com/doc/2006-03-01/");
+    body += contents.toString();
+  }
+  b2.m("POST").h(headers).q(query).b(body);
   return b2.build();
 };
 var se_GetObjectCommand = async (input, context) => {
@@ -3147,17 +3151,25 @@ var de_CreateSessionCommand = async (output, context) => {
   }
   return contents;
 };
-var de_DeleteObjectCommand = async (output, context) => {
-  if (output.statusCode !== 204 && output.statusCode >= 300) {
+var de_DeleteObjectsCommand = async (output, context) => {
+  if (output.statusCode !== 200 && output.statusCode >= 300) {
     return de_CommandError(output, context);
   }
   const contents = map({
     $metadata: deserializeMetadata(output),
-    [_DM]: [() => void 0 !== output.headers[_xadm], () => parseBoolean(output.headers[_xadm])],
-    [_VI]: [, output.headers[_xavi]],
     [_RC]: [, output.headers[_xarc]]
   });
-  await collectBody(output.body, context);
+  const data = expectNonNull(expectObject(await parseXmlBody(output.body, context)), "body");
+  if (data.Deleted === "") {
+    contents[_De] = [];
+  } else if (data[_De] != null) {
+    contents[_De] = de_DeletedObjects(getArrayIfSingleItem(data[_De]), context);
+  }
+  if (data.Error === "") {
+    contents[_Err] = [];
+  } else if (data[_Er] != null) {
+    contents[_Err] = de_Errors(getArrayIfSingleItem(data[_Er]), context);
+  }
   return contents;
 };
 var de_GetObjectCommand = async (output, context) => {
@@ -3578,6 +3590,37 @@ var se_CompletedPartList = (input, context) => {
     return n2.n(_me);
   });
 };
+var se_Delete = (input, context) => {
+  const bn2 = new XmlNode(_Del);
+  bn2.l(input, "Objects", "Object", () => se_ObjectIdentifierList(input[_Ob], context));
+  if (input[_Q] != null) {
+    bn2.c(XmlNode.of(_Q, String(input[_Q])).n(_Q));
+  }
+  return bn2;
+};
+var se_ObjectIdentifier = (input, context) => {
+  const bn2 = new XmlNode(_OI);
+  if (input[_K] != null) {
+    bn2.c(XmlNode.of(_OK, input[_K]).n(_K));
+  }
+  if (input[_VI] != null) {
+    bn2.c(XmlNode.of(_OVI, input[_VI]).n(_VI));
+  }
+  bn2.cc(input, _ETa);
+  if (input[_LMT] != null) {
+    bn2.c(XmlNode.of(_LMT, dateToUtcString(input[_LMT]).toString()).n(_LMT));
+  }
+  if (input[_Si] != null) {
+    bn2.c(XmlNode.of(_Si, String(input[_Si])).n(_Si));
+  }
+  return bn2;
+};
+var se_ObjectIdentifierList = (input, context) => {
+  return input.filter((e2) => e2 != null).map((entry) => {
+    const n2 = se_ObjectIdentifier(entry, context);
+    return n2.n(_me);
+  });
+};
 var de_ChecksumAlgorithmList = (output, context) => {
   return (output || []).filter((e2) => e2 != null).map((entry) => {
     return expectString(entry);
@@ -3593,6 +3636,48 @@ var de_CommonPrefix = (output, context) => {
 var de_CommonPrefixList = (output, context) => {
   return (output || []).filter((e2) => e2 != null).map((entry) => {
     return de_CommonPrefix(entry, context);
+  });
+};
+var de_DeletedObject = (output, context) => {
+  const contents = {};
+  if (output[_K] != null) {
+    contents[_K] = expectString(output[_K]);
+  }
+  if (output[_VI] != null) {
+    contents[_VI] = expectString(output[_VI]);
+  }
+  if (output[_DM] != null) {
+    contents[_DM] = parseBoolean(output[_DM]);
+  }
+  if (output[_DMVI] != null) {
+    contents[_DMVI] = expectString(output[_DMVI]);
+  }
+  return contents;
+};
+var de_DeletedObjects = (output, context) => {
+  return (output || []).filter((e2) => e2 != null).map((entry) => {
+    return de_DeletedObject(entry, context);
+  });
+};
+var de__Error = (output, context) => {
+  const contents = {};
+  if (output[_K] != null) {
+    contents[_K] = expectString(output[_K]);
+  }
+  if (output[_VI] != null) {
+    contents[_VI] = expectString(output[_VI]);
+  }
+  if (output[_Cod] != null) {
+    contents[_Cod] = expectString(output[_Cod]);
+  }
+  if (output[_Mes] != null) {
+    contents[_Mes] = expectString(output[_Mes]);
+  }
+  return contents;
+};
+var de_Errors = (output, context) => {
+  return (output || []).filter((e2) => e2 != null).map((entry) => {
+    return de__Error(entry, context);
   });
 };
 var de__Object = (output, context) => {
@@ -3707,14 +3792,20 @@ var _CT = "ChecksumType";
 var _CTo = "ContentType";
 var _CTon = "ContinuationToken";
 var _Co = "Contents";
+var _Cod = "Code";
 var _D = "Delimiter";
 var _DM = "DeleteMarker";
+var _DMVI = "DeleteMarkerVersionId";
 var _DN = "DisplayName";
+var _De = "Deleted";
+var _Del = "Delete";
 var _E = "Expires";
 var _EBO = "ExpectedBucketOwner";
 var _ES = "ExpiresString";
 var _ET = "EncodingType";
 var _ETa = "ETag";
+var _Er = "Error";
+var _Err = "Errors";
 var _Exp = "Expiration";
 var _FO = "FetchOwner";
 var _GFC = "GrantFullControl";
@@ -3723,8 +3814,6 @@ var _GRACP = "GrantReadACP";
 var _GWACP = "GrantWriteACP";
 var _ID_ = "ID";
 var _IM = "IfMatch";
-var _IMLMT = "IfMatchLastModifiedTime";
-var _IMS = "IfMatchSize";
 var _IMSf = "IfModifiedSince";
 var _INM = "IfNoneMatch";
 var _IRIP = "IsRestoreInProgress";
@@ -3734,21 +3823,28 @@ var _K = "Key";
 var _KC = "KeyCount";
 var _L = "Location";
 var _LM = "LastModified";
+var _LMT = "LastModifiedTime";
 var _MFA = "MFA";
 var _MK = "MaxKeys";
 var _MM = "MissingMeta";
 var _MOS = "MpuObjectSize";
+var _Mes = "Message";
 var _N = "Name";
 var _NCT = "NextContinuationToken";
 var _O = "Owner";
+var _OI = "ObjectIdentifier";
+var _OK = "ObjectKey";
 var _OLLHS = "ObjectLockLegalHoldStatus";
 var _OLM = "ObjectLockMode";
 var _OLRUD = "ObjectLockRetainUntilDate";
 var _OOA = "OptionalObjectAttributes";
+var _OVI = "ObjectVersionId";
+var _Ob = "Objects";
 var _P = "Prefix";
 var _PC = "PartsCount";
 var _PN = "PartNumber";
 var _Part = "Parts";
+var _Q = "Quiet";
 var _R = "Range";
 var _RC = "RequestCharged";
 var _RCC = "ResponseCacheControl";
@@ -3790,6 +3886,7 @@ var _cm = "content-md5";
 var _cr = "content-range";
 var _ct = "content-type";
 var _ct_ = "continuation-token";
+var _d = "delete";
 var _de = "delimiter";
 var _e = "expires";
 var _et = "encoding-type";
@@ -3840,8 +3937,6 @@ var _xagfc = "x-amz-grant-full-control";
 var _xagr = "x-amz-grant-read";
 var _xagra = "x-amz-grant-read-acp";
 var _xagwa = "x-amz-grant-write-acp";
-var _xaimlmt = "x-amz-if-match-last-modified-time";
-var _xaims = "x-amz-if-match-size";
 var _xam = "x-amz-mfa";
 var _xamm = "x-amz-missing-meta";
 var _xamos = "x-amz-mp-object-size";
@@ -4961,18 +5056,21 @@ var CreateMultipartUploadCommand = class extends Command.classBuilder().ep({
 }).s("AmazonS3", "CreateMultipartUpload", {}).n("S3Client", "CreateMultipartUploadCommand").f(CreateMultipartUploadRequestFilterSensitiveLog, CreateMultipartUploadOutputFilterSensitiveLog).ser(se_CreateMultipartUploadCommand).de(de_CreateMultipartUploadCommand).build() {
 };
 
-// node_modules/@aws-sdk/client-s3/dist-es/commands/DeleteObjectCommand.js
-var DeleteObjectCommand = class extends Command.classBuilder().ep({
+// node_modules/@aws-sdk/client-s3/dist-es/commands/DeleteObjectsCommand.js
+var DeleteObjectsCommand = class extends Command.classBuilder().ep({
   ...commonParams,
-  Bucket: { type: "contextParams", name: "Bucket" },
-  Key: { type: "contextParams", name: "Key" }
+  Bucket: { type: "contextParams", name: "Bucket" }
 }).m(function(Command2, cs2, config, o2) {
   return [
     getSerdePlugin(config, this.serialize, this.deserialize),
     getEndpointPlugin(config, Command2.getEndpointParameterInstructions()),
+    getFlexibleChecksumsPlugin(config, {
+      requestAlgorithmMember: { httpHeader: "x-amz-sdk-checksum-algorithm", name: "ChecksumAlgorithm" },
+      requestChecksumRequired: true
+    }),
     getThrow200ExceptionsPlugin(config)
   ];
-}).s("AmazonS3", "DeleteObject", {}).n("S3Client", "DeleteObjectCommand").f(void 0, void 0).ser(se_DeleteObjectCommand).de(de_DeleteObjectCommand).build() {
+}).s("AmazonS3", "DeleteObjects", {}).n("S3Client", "DeleteObjectsCommand").f(void 0, void 0).ser(se_DeleteObjectsCommand).de(de_DeleteObjectsCommand).build() {
 };
 
 // node_modules/@aws-sdk/client-s3/dist-es/commands/GetObjectCommand.js
@@ -5222,6 +5320,15 @@ import dotenv from "dotenv";
 dotenv.config();
 var Bucket = process.env.BUCKET_NAME;
 console.info("BUCKET_NAME", Bucket);
+var deleteObjects = (keys, Objects) => {
+  const command = new DeleteObjectsCommand({
+    Bucket,
+    Delete: {
+      Objects: Objects ? Objects : keys.map((Key) => ({ Key }))
+    }
+  });
+  return getS3Client().send(command);
+};
 var listObjectsInFolder = (Prefix) => getS3Client().send(new ListObjectsV2Command({ Bucket, Prefix }));
 var completeMultipart = ({
   ETags,
@@ -5375,6 +5482,7 @@ var handler = async (request, cb2, options) => {
 };
 export {
   deleteObject,
+  deleteObjects,
   fileExist,
   getDeleteFileUrl,
   getPutFileUrl,
