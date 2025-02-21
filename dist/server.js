@@ -2846,6 +2846,28 @@ var se_CreateSessionCommand = async (input, context) => {
   b2.m("GET").h(headers).q(query).b(body);
   return b2.build();
 };
+var se_DeleteObjectCommand = async (input, context) => {
+  const b2 = requestBuilder(input, context);
+  const headers = map({}, isSerializableHeaderValue, {
+    [_xam]: input[_MFA],
+    [_xarp]: input[_RP],
+    [_xabgr]: [() => isSerializableHeaderValue(input[_BGR]), () => input[_BGR].toString()],
+    [_xaebo]: input[_EBO],
+    [_im]: input[_IM],
+    [_xaimlmt]: [() => isSerializableHeaderValue(input[_IMLMT]), () => dateToUtcString(input[_IMLMT]).toString()],
+    [_xaims]: [() => isSerializableHeaderValue(input[_IMS]), () => input[_IMS].toString()]
+  });
+  b2.bp("/{Key+}");
+  b2.p("Bucket", () => input.Bucket, "{Bucket}", false);
+  b2.p("Key", () => input.Key, "{Key+}", true);
+  const query = map({
+    [_xi]: [, "DeleteObject"],
+    [_vI]: [, input[_VI]]
+  });
+  let body;
+  b2.m("DELETE").h(headers).q(query).b(body);
+  return b2.build();
+};
 var se_DeleteObjectsCommand = async (input, context) => {
   const b2 = requestBuilder(input, context);
   const headers = map({}, isSerializableHeaderValue, {
@@ -3149,6 +3171,19 @@ var de_CreateSessionCommand = async (output, context) => {
   if (data[_C] != null) {
     contents[_C] = de_SessionCredentials(data[_C], context);
   }
+  return contents;
+};
+var de_DeleteObjectCommand = async (output, context) => {
+  if (output.statusCode !== 204 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = map({
+    $metadata: deserializeMetadata(output),
+    [_DM]: [() => void 0 !== output.headers[_xadm], () => parseBoolean(output.headers[_xadm])],
+    [_VI]: [, output.headers[_xavi]],
+    [_RC]: [, output.headers[_xarc]]
+  });
+  await collectBody(output.body, context);
   return contents;
 };
 var de_DeleteObjectsCommand = async (output, context) => {
@@ -3814,6 +3849,8 @@ var _GRACP = "GrantReadACP";
 var _GWACP = "GrantWriteACP";
 var _ID_ = "ID";
 var _IM = "IfMatch";
+var _IMLMT = "IfMatchLastModifiedTime";
+var _IMS = "IfMatchSize";
 var _IMSf = "IfModifiedSince";
 var _INM = "IfNoneMatch";
 var _IRIP = "IsRestoreInProgress";
@@ -3937,6 +3974,8 @@ var _xagfc = "x-amz-grant-full-control";
 var _xagr = "x-amz-grant-read";
 var _xagra = "x-amz-grant-read-acp";
 var _xagwa = "x-amz-grant-write-acp";
+var _xaimlmt = "x-amz-if-match-last-modified-time";
+var _xaims = "x-amz-if-match-size";
 var _xam = "x-amz-mfa";
 var _xamm = "x-amz-missing-meta";
 var _xamos = "x-amz-mp-object-size";
@@ -5054,6 +5093,20 @@ var CreateMultipartUploadCommand = class extends Command.classBuilder().ep({
     getSsecPlugin(config)
   ];
 }).s("AmazonS3", "CreateMultipartUpload", {}).n("S3Client", "CreateMultipartUploadCommand").f(CreateMultipartUploadRequestFilterSensitiveLog, CreateMultipartUploadOutputFilterSensitiveLog).ser(se_CreateMultipartUploadCommand).de(de_CreateMultipartUploadCommand).build() {
+};
+
+// node_modules/@aws-sdk/client-s3/dist-es/commands/DeleteObjectCommand.js
+var DeleteObjectCommand = class extends Command.classBuilder().ep({
+  ...commonParams,
+  Bucket: { type: "contextParams", name: "Bucket" },
+  Key: { type: "contextParams", name: "Key" }
+}).m(function(Command2, cs2, config, o2) {
+  return [
+    getSerdePlugin(config, this.serialize, this.deserialize),
+    getEndpointPlugin(config, Command2.getEndpointParameterInstructions()),
+    getThrow200ExceptionsPlugin(config)
+  ];
+}).s("AmazonS3", "DeleteObject", {}).n("S3Client", "DeleteObjectCommand").f(void 0, void 0).ser(se_DeleteObjectCommand).de(de_DeleteObjectCommand).build() {
 };
 
 // node_modules/@aws-sdk/client-s3/dist-es/commands/DeleteObjectsCommand.js
