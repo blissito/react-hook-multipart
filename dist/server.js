@@ -7,7 +7,7 @@ import {
   loadRestXmlErrorCode,
   parseXmlBody,
   parseXmlErrorBody
-} from "./chunk-G32PDLDO.js";
+} from "./chunk-NQ7P7QKK.js";
 import {
   AwsSdkSigV4ASigner,
   AwsSdkSigV4Signer,
@@ -58,7 +58,7 @@ import {
   resolveRetryConfig,
   resolveUserAgentConfig,
   setFeature
-} from "./chunk-T4RFJPJI.js";
+} from "./chunk-ZK3NUXIP.js";
 import {
   loadConfig,
   parseUrl
@@ -84,6 +84,7 @@ import {
   fromBase64,
   fromHex,
   fromUtf8,
+  getArrayIfSingleItem,
   getAwsChunkedEncodingStream,
   getDefaultExtensionConfiguration,
   getHttpHandlerExtensionConfiguration,
@@ -95,6 +96,7 @@ import {
   parseBoolean,
   parseRfc3339DateTimeWithOffset,
   parseRfc7231DateTime,
+  quoteHeader,
   requestBuilder,
   resolveDefaultRuntimeConfig,
   resolveHttpHandlerRuntimeConfig,
@@ -109,7 +111,7 @@ import {
   toUint8Array,
   toUtf8,
   withBaseException
-} from "./chunk-SVASSJ7L.js";
+} from "./chunk-6YUZF75W.js";
 import {
   ENV_PROFILE
 } from "./chunk-AGSJSKE7.js";
@@ -2931,6 +2933,29 @@ var se_HeadObjectCommand = async (input, context) => {
   b2.m("HEAD").h(headers).q(query).b(body);
   return b2.build();
 };
+var se_ListObjectsV2Command = async (input, context) => {
+  const b2 = requestBuilder(input, context);
+  const headers = map({}, isSerializableHeaderValue, {
+    [_xarp]: input[_RP],
+    [_xaebo]: input[_EBO],
+    [_xaooa]: [() => isSerializableHeaderValue(input[_OOA]), () => (input[_OOA] || []).map(quoteHeader).join(", ")]
+  });
+  b2.bp("/");
+  b2.p("Bucket", () => input.Bucket, "{Bucket}", false);
+  const query = map({
+    [_lt]: [, "2"],
+    [_de]: [, input[_D]],
+    [_et]: [, input[_ET]],
+    [_mk]: [() => input.MaxKeys !== void 0, () => input[_MK].toString()],
+    [_pr]: [, input[_P]],
+    [_ct_]: [, input[_CTon]],
+    [_fo]: [() => input.FetchOwner !== void 0, () => input[_FO].toString()],
+    [_sa]: [, input[_SA]]
+  });
+  let body;
+  b2.m("GET").h(headers).q(query).b(body);
+  return b2.build();
+};
 var se_PutObjectCommand = async (input, context) => {
   const b2 = requestBuilder(input, context);
   const headers = map({}, isSerializableHeaderValue, {
@@ -3250,6 +3275,57 @@ var de_HeadObjectCommand = async (output, context) => {
   await collectBody(output.body, context);
   return contents;
 };
+var de_ListObjectsV2Command = async (output, context) => {
+  if (output.statusCode !== 200 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = map({
+    $metadata: deserializeMetadata(output),
+    [_RC]: [, output.headers[_xarc]]
+  });
+  const data = expectNonNull(expectObject(await parseXmlBody(output.body, context)), "body");
+  if (data.CommonPrefixes === "") {
+    contents[_CP] = [];
+  } else if (data[_CP] != null) {
+    contents[_CP] = de_CommonPrefixList(getArrayIfSingleItem(data[_CP]), context);
+  }
+  if (data.Contents === "") {
+    contents[_Co] = [];
+  } else if (data[_Co] != null) {
+    contents[_Co] = de_ObjectList(getArrayIfSingleItem(data[_Co]), context);
+  }
+  if (data[_CTon] != null) {
+    contents[_CTon] = expectString(data[_CTon]);
+  }
+  if (data[_D] != null) {
+    contents[_D] = expectString(data[_D]);
+  }
+  if (data[_ET] != null) {
+    contents[_ET] = expectString(data[_ET]);
+  }
+  if (data[_IT] != null) {
+    contents[_IT] = parseBoolean(data[_IT]);
+  }
+  if (data[_KC] != null) {
+    contents[_KC] = strictParseInt32(data[_KC]);
+  }
+  if (data[_MK] != null) {
+    contents[_MK] = strictParseInt32(data[_MK]);
+  }
+  if (data[_N] != null) {
+    contents[_N] = expectString(data[_N]);
+  }
+  if (data[_NCT] != null) {
+    contents[_NCT] = expectString(data[_NCT]);
+  }
+  if (data[_P] != null) {
+    contents[_P] = expectString(data[_P]);
+  }
+  if (data[_SA] != null) {
+    contents[_SA] = expectString(data[_SA]);
+  }
+  return contents;
+};
 var de_PutObjectCommand = async (output, context) => {
   if (output.statusCode !== 200 && output.statusCode >= 300) {
     return de_CommandError(output, context);
@@ -3502,6 +3578,81 @@ var se_CompletedPartList = (input, context) => {
     return n2.n(_me);
   });
 };
+var de_ChecksumAlgorithmList = (output, context) => {
+  return (output || []).filter((e2) => e2 != null).map((entry) => {
+    return expectString(entry);
+  });
+};
+var de_CommonPrefix = (output, context) => {
+  const contents = {};
+  if (output[_P] != null) {
+    contents[_P] = expectString(output[_P]);
+  }
+  return contents;
+};
+var de_CommonPrefixList = (output, context) => {
+  return (output || []).filter((e2) => e2 != null).map((entry) => {
+    return de_CommonPrefix(entry, context);
+  });
+};
+var de__Object = (output, context) => {
+  const contents = {};
+  if (output[_K] != null) {
+    contents[_K] = expectString(output[_K]);
+  }
+  if (output[_LM] != null) {
+    contents[_LM] = expectNonNull(parseRfc3339DateTimeWithOffset(output[_LM]));
+  }
+  if (output[_ETa] != null) {
+    contents[_ETa] = expectString(output[_ETa]);
+  }
+  if (output.ChecksumAlgorithm === "") {
+    contents[_CA] = [];
+  } else if (output[_CA] != null) {
+    contents[_CA] = de_ChecksumAlgorithmList(getArrayIfSingleItem(output[_CA]), context);
+  }
+  if (output[_CT] != null) {
+    contents[_CT] = expectString(output[_CT]);
+  }
+  if (output[_Si] != null) {
+    contents[_Si] = strictParseLong(output[_Si]);
+  }
+  if (output[_SC] != null) {
+    contents[_SC] = expectString(output[_SC]);
+  }
+  if (output[_O] != null) {
+    contents[_O] = de_Owner(output[_O], context);
+  }
+  if (output[_RSe] != null) {
+    contents[_RSe] = de_RestoreStatus(output[_RSe], context);
+  }
+  return contents;
+};
+var de_ObjectList = (output, context) => {
+  return (output || []).filter((e2) => e2 != null).map((entry) => {
+    return de__Object(entry, context);
+  });
+};
+var de_Owner = (output, context) => {
+  const contents = {};
+  if (output[_DN] != null) {
+    contents[_DN] = expectString(output[_DN]);
+  }
+  if (output[_ID_] != null) {
+    contents[_ID_] = expectString(output[_ID_]);
+  }
+  return contents;
+};
+var de_RestoreStatus = (output, context) => {
+  const contents = {};
+  if (output[_IRIP] != null) {
+    contents[_IRIP] = parseBoolean(output[_IRIP]);
+  }
+  if (output[_RED] != null) {
+    contents[_RED] = expectNonNull(parseRfc3339DateTimeWithOffset(output[_RED]));
+  }
+  return contents;
+};
 var de_SessionCredentials = (output, context) => {
   const contents = {};
   if (output[_AKI] != null) {
@@ -3547,37 +3698,54 @@ var _CLo = "ContentLength";
 var _CM = "ChecksumMode";
 var _CMD = "ContentMD5";
 var _CMU = "CompletedMultipartUpload";
+var _CP = "CommonPrefixes";
 var _CPo = "CompletedPart";
 var _CR = "ContentRange";
 var _CSHA = "ChecksumSHA1";
 var _CSHAh = "ChecksumSHA256";
 var _CT = "ChecksumType";
 var _CTo = "ContentType";
+var _CTon = "ContinuationToken";
+var _Co = "Contents";
+var _D = "Delimiter";
 var _DM = "DeleteMarker";
+var _DN = "DisplayName";
 var _E = "Expires";
 var _EBO = "ExpectedBucketOwner";
 var _ES = "ExpiresString";
+var _ET = "EncodingType";
 var _ETa = "ETag";
 var _Exp = "Expiration";
+var _FO = "FetchOwner";
 var _GFC = "GrantFullControl";
 var _GR = "GrantRead";
 var _GRACP = "GrantReadACP";
 var _GWACP = "GrantWriteACP";
+var _ID_ = "ID";
 var _IM = "IfMatch";
 var _IMLMT = "IfMatchLastModifiedTime";
 var _IMS = "IfMatchSize";
 var _IMSf = "IfModifiedSince";
 var _INM = "IfNoneMatch";
+var _IRIP = "IsRestoreInProgress";
+var _IT = "IsTruncated";
 var _IUS = "IfUnmodifiedSince";
 var _K = "Key";
+var _KC = "KeyCount";
 var _L = "Location";
 var _LM = "LastModified";
 var _MFA = "MFA";
+var _MK = "MaxKeys";
 var _MM = "MissingMeta";
 var _MOS = "MpuObjectSize";
+var _N = "Name";
+var _NCT = "NextContinuationToken";
+var _O = "Owner";
 var _OLLHS = "ObjectLockLegalHoldStatus";
 var _OLM = "ObjectLockMode";
 var _OLRUD = "ObjectLockRetainUntilDate";
+var _OOA = "OptionalObjectAttributes";
+var _P = "Prefix";
 var _PC = "PartsCount";
 var _PN = "PartNumber";
 var _Part = "Parts";
@@ -3589,9 +3757,12 @@ var _RCE = "ResponseContentEncoding";
 var _RCL = "ResponseContentLanguage";
 var _RCT = "ResponseContentType";
 var _RE = "ResponseExpires";
+var _RED = "RestoreExpiryDate";
 var _RP = "RequestPayer";
 var _RS = "ReplicationStatus";
+var _RSe = "RestoreStatus";
 var _Re = "Restore";
+var _SA = "StartAfter";
 var _SAK = "SecretAccessKey";
 var _SC = "StorageClass";
 var _SM = "SessionMode";
@@ -3618,16 +3789,23 @@ var _cl_ = "content-length";
 var _cm = "content-md5";
 var _cr = "content-range";
 var _ct = "content-type";
+var _ct_ = "continuation-token";
+var _de = "delimiter";
 var _e = "expires";
+var _et = "encoding-type";
 var _eta = "etag";
 var _ex = "expiresstring";
+var _fo = "fetch-owner";
 var _im = "if-match";
 var _ims = "if-modified-since";
 var _inm = "if-none-match";
 var _ius = "if-unmodified-since";
 var _lm = "last-modified";
+var _lt = "list-type";
 var _me = "member";
+var _mk = "max-keys";
 var _pN = "partNumber";
+var _pr = "prefix";
 var _ra = "range";
 var _rcc = "response-cache-control";
 var _rcd = "response-content-disposition";
@@ -3636,6 +3814,7 @@ var _rcl = "response-content-language";
 var _rct = "response-content-type";
 var _re = "response-expires";
 var _s = "session";
+var _sa = "start-after";
 var _u = "uploads";
 var _uI = "uploadId";
 var _vI = "versionId";
@@ -3670,6 +3849,7 @@ var _xampc = "x-amz-mp-parts-count";
 var _xaollh = "x-amz-object-lock-legal-hold";
 var _xaolm = "x-amz-object-lock-mode";
 var _xaolrud = "x-amz-object-lock-retain-until-date";
+var _xaooa = "x-amz-optional-object-attributes";
 var _xaos = "x-amz-object-size";
 var _xar = "x-amz-restore";
 var _xarc = "x-amz-request-charged";
@@ -3836,7 +4016,7 @@ var remoteProvider = async (init) => {
   const { ENV_CMDS_FULL_URI, ENV_CMDS_RELATIVE_URI, fromContainerMetadata, fromInstanceMetadata } = await import("./dist-es-7JSGNQV5.js");
   if (process.env[ENV_CMDS_RELATIVE_URI] || process.env[ENV_CMDS_FULL_URI]) {
     init.logger?.debug("@aws-sdk/credential-provider-node - remoteProvider::fromHttp/fromContainerMetadata");
-    const { fromHttp } = await import("./dist-es-A2TIKQUW.js");
+    const { fromHttp } = await import("./dist-es-4KFWOMFF.js");
     return chain(fromHttp(init), fromContainerMetadata(init));
   }
   if (process.env[ENV_IMDS_DISABLED]) {
@@ -3882,11 +4062,11 @@ var defaultProvider = (init = {}) => memoize(chain(async () => {
   if (!ssoStartUrl && !ssoAccountId && !ssoRegion && !ssoRoleName && !ssoSession) {
     throw new CredentialsProviderError("Skipping SSO provider in default chain (inputs do not include SSO fields).", { logger: init.logger });
   }
-  const { fromSSO } = await import("./dist-es-ZZPSORBJ.js");
+  const { fromSSO } = await import("./dist-es-ZFEAAHIU.js");
   return fromSSO(init)();
 }, async () => {
   init.logger?.debug("@aws-sdk/credential-provider-node - defaultProvider::fromIni");
-  const { fromIni } = await import("./dist-es-T3MXWRET.js");
+  const { fromIni } = await import("./dist-es-DILCYJWR.js");
   return fromIni(init)();
 }, async () => {
   init.logger?.debug("@aws-sdk/credential-provider-node - defaultProvider::fromProcess");
@@ -3894,7 +4074,7 @@ var defaultProvider = (init = {}) => memoize(chain(async () => {
   return fromProcess(init)();
 }, async () => {
   init.logger?.debug("@aws-sdk/credential-provider-node - defaultProvider::fromTokenFile");
-  const { fromTokenFile } = await import("./dist-es-FO3XJCPC.js");
+  const { fromTokenFile } = await import("./dist-es-OF653RNE.js");
   return fromTokenFile(init)();
 }, async () => {
   init.logger?.debug("@aws-sdk/credential-provider-node - defaultProvider::remoteProvider");
@@ -4831,6 +5011,20 @@ var HeadObjectCommand = class extends Command.classBuilder().ep({
 }).s("AmazonS3", "HeadObject", {}).n("S3Client", "HeadObjectCommand").f(HeadObjectRequestFilterSensitiveLog, HeadObjectOutputFilterSensitiveLog).ser(se_HeadObjectCommand).de(de_HeadObjectCommand).build() {
 };
 
+// node_modules/@aws-sdk/client-s3/dist-es/commands/ListObjectsV2Command.js
+var ListObjectsV2Command = class extends Command.classBuilder().ep({
+  ...commonParams,
+  Bucket: { type: "contextParams", name: "Bucket" },
+  Prefix: { type: "contextParams", name: "Prefix" }
+}).m(function(Command2, cs2, config, o2) {
+  return [
+    getSerdePlugin(config, this.serialize, this.deserialize),
+    getEndpointPlugin(config, Command2.getEndpointParameterInstructions()),
+    getThrow200ExceptionsPlugin(config)
+  ];
+}).s("AmazonS3", "ListObjectsV2", {}).n("S3Client", "ListObjectsV2Command").f(void 0, void 0).ser(se_ListObjectsV2Command).de(de_ListObjectsV2Command).build() {
+};
+
 // node_modules/@aws-sdk/client-s3/dist-es/commands/PutObjectCommand.js
 var PutObjectCommand = class extends Command.classBuilder().ep({
   ...commonParams,
@@ -5028,6 +5222,7 @@ import dotenv from "dotenv";
 dotenv.config();
 var Bucket = process.env.BUCKET_NAME;
 console.info("BUCKET_NAME", Bucket);
+var listObjectsInFolder = (Prefix) => getS3Client().send(new ListObjectsV2Command({ Bucket, Prefix }));
 var completeMultipart = ({
   ETags,
   UploadId,
@@ -5185,5 +5380,6 @@ export {
   getPutFileUrl,
   getReadURL,
   getS3Client,
-  handler
+  handler,
+  listObjectsInFolder
 };

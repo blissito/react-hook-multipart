@@ -4,7 +4,7 @@ import {
   CreateMultipartUploadCommand,
   UploadPartCommand,
   CompleteMultipartUploadCommand,
-  DeleteObjectCommand,
+  DeleteObjectsCommand,
   GetObjectCommand,
   HeadObjectCommand,
   PutObjectCommand,
@@ -17,6 +17,16 @@ dotenv.config();
 
 export const Bucket = process.env.BUCKET_NAME;
 console.info("BUCKET_NAME", Bucket);
+
+export const deleteObjects = (keys: string[], Objects?: { Key: string }[]) => {
+  const command = new DeleteObjectsCommand({
+    Bucket,
+    Delete: {
+      Objects: Objects ? Objects : keys.map((Key) => ({ Key })),
+    },
+  });
+  return getS3Client().send(command);
+};
 
 export const listObjectsInFolder = (Prefix: string) =>
   getS3Client().send(new ListObjectsV2Command({ Bucket, Prefix }));
