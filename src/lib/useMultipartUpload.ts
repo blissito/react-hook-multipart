@@ -27,7 +27,7 @@ export interface UploadOptions {
    * Whether the file should be publicly accessible.
    * I'm following the ACL string values 'private' | 'public-read'
    */
-  access: "public-read";
+  access: "public-read" | "private";
   /**
    * Adds a random uuid to the filename.
    * @defaultvalue true
