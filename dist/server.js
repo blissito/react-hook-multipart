@@ -118,7 +118,7 @@ var fileExist = (Key) => {
     return false;
   });
 };
-var getPutFileUrl = (Key, expiresIn = 900, ACL = "public-read") => getSignedUrl(
+var getPutFileUrl = (Key, expiresIn = 900, ACL = "private") => getSignedUrl(
   getS3Client(),
   new PutObjectCommand({
     Bucket,
