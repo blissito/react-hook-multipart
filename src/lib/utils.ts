@@ -150,17 +150,22 @@ export const fileExist = (Key: string) => {
 export const getPutFileUrl = (
   Key: string,
   expiresIn: number = 900,
-  ACL: "private" | "public-read" = "private"
-) =>
-  getSignedUrl(
+  config: {
+    ACL?: "public-read" | "private";
+    Bucket?: string;
+  }
+) => {
+  const { ACL = "private", Bucket: B } = config || {};
+  return getSignedUrl(
     getS3Client(),
     new PutObjectCommand({
-      Bucket,
+      Bucket: B || Bucket,
       Key,
       ACL,
     }),
     { expiresIn }
   );
+};
 
 export const getDeleteFileUrl = async (Key: string) =>
   getSignedUrl(

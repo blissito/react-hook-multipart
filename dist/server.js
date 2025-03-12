@@ -118,15 +118,18 @@ var fileExist = (Key) => {
     return false;
   });
 };
-var getPutFileUrl = (Key, expiresIn = 900, ACL = "private") => getSignedUrl(
-  getS3Client(),
-  new PutObjectCommand({
-    Bucket,
-    Key,
-    ACL
-  }),
-  { expiresIn }
-);
+var getPutFileUrl = (Key, expiresIn = 900, config) => {
+  const { ACL = "private", Bucket: B } = config || {};
+  return getSignedUrl(
+    getS3Client(),
+    new PutObjectCommand({
+      Bucket: B || Bucket,
+      Key,
+      ACL
+    }),
+    { expiresIn }
+  );
+};
 var getDeleteFileUrl = async (Key) => getSignedUrl(
   getS3Client(),
   new DeleteObjectCommand({
