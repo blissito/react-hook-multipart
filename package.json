@@ -1,5 +1,5 @@
 {
-  "version": "0.0.50",
+  "version": "0.0.51",
   "type": "module",
   "description": "A fast, efficient hook for upload big files with multipart streams in a React environment",
   "author": "Héctorbliss <fixtergeek@gmail.com>",

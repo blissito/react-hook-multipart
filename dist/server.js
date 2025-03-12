@@ -1,13 +1,13 @@
 import {
   COMPLETE_MULTIPART_STRING,
   CREATE_MULTIPART_STRING,
-  CREATE_PUT_PART_URL_STRING,
+  CREATE_PUT_PART_URL_STRING
 } from "./chunk-VHLUS35K.js";
 
 // src/lib/utils.ts
 import {
   S3Client,
-  // PutBucketCorsCommand,
+  PutBucketCorsCommand,
   CreateMultipartUploadCommand,
   UploadPartCommand,
   CompleteMultipartUploadCommand,
@@ -16,7 +16,7 @@ import {
   GetObjectCommand,
   HeadObjectCommand,
   PutObjectCommand,
-  ListObjectsV2Command,
+  ListObjectsV2Command
 } from "@aws-sdk/client-s3";
 import { randomUUID } from "crypto";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
@@ -27,14 +27,17 @@ var deleteObjects = (keys, Objects) => {
   const command = new DeleteObjectsCommand({
     Bucket,
     Delete: {
-      Objects: Objects ? Objects : keys.map((Key) => ({ Key })),
-    },
+      Objects: Objects ? Objects : keys.map((Key) => ({ Key }))
+    }
   });
   return getS3Client().send(command);
 };
-var listObjectsInFolder = (Prefix) =>
-  getS3Client().send(new ListObjectsV2Command({ Bucket, Prefix }));
-var completeMultipart = ({ ETags, UploadId, Key }) => {
+var listObjectsInFolder = (Prefix) => getS3Client().send(new ListObjectsV2Command({ Bucket, Prefix }));
+var completeMultipart = ({
+  ETags,
+  UploadId,
+  Key
+}) => {
   return getS3Client().send(
     new CompleteMultipartUploadCommand({
       Bucket,
@@ -43,25 +46,24 @@ var completeMultipart = ({ ETags, UploadId, Key }) => {
       MultipartUpload: {
         Parts: ETags.map((ETag, i) => ({
           ETag,
-          PartNumber: i + 1,
-        })),
-      },
+          PartNumber: i + 1
+        }))
+      }
     })
   );
 };
-var getPutPartUrl = (options) =>
-  getSignedUrl(
-    getS3Client(),
-    new UploadPartCommand({
-      Bucket,
-      Key: options.Key,
-      UploadId: options.UploadId,
-      PartNumber: options.PartNumber,
-    }),
-    {
-      expiresIn: options.expiresIn,
-    }
-  );
+var getPutPartUrl = (options) => getSignedUrl(
+  getS3Client(),
+  new UploadPartCommand({
+    Bucket,
+    Key: options.Key,
+    UploadId: options.UploadId,
+    PartNumber: options.PartNumber
+  }),
+  {
+    expiresIn: options.expiresIn
+  }
+);
 var createMultipart = async (fileName, ACL = "private") => {
   let Key = randomUUID();
   if (fileName) {
@@ -73,23 +75,22 @@ var createMultipart = async (fileName, ACL = "private") => {
     new CreateMultipartUploadCommand({
       Bucket,
       Key,
-      ACL,
+      ACL
     })
   );
   if (!UploadId)
     throw new Error("Error trying to create a multipart upload \u{1F6A8}");
   return {
     uploadId: UploadId,
-    key: Key,
+    key: Key
   };
 };
-var deleteObject = (Key) =>
-  getS3Client().send(
-    new DeleteObjectCommand({
-      Bucket,
-      Key,
-    })
-  );
+var deleteObject = (Key) => getS3Client().send(
+  new DeleteObjectCommand({
+    Bucket,
+    Key
+  })
+);
 var globalBucket = Bucket;
 var getReadURL = (Key, expiresIn = 900, options = {}) => {
   const { Bucket: Bucket2 = globalBucket } = options;
@@ -97,52 +98,48 @@ var getReadURL = (Key, expiresIn = 900, options = {}) => {
     getS3Client(),
     new GetObjectCommand({
       Key,
-      Bucket: Bucket2,
+      Bucket: Bucket2
     }),
     { expiresIn }
     // seconds
   );
 };
 var fileExist = (Key) => {
-  return getS3Client()
-    .send(
-      new HeadObjectCommand({
-        Bucket,
-        Key,
-      })
-    )
-    .then((r) => {
-      console.log("::FILE_EXIST:: ", r.ContentType);
-      return true;
+  return getS3Client().send(
+    new HeadObjectCommand({
+      Bucket,
+      Key
     })
-    .catch((err) => {
-      console.error("FILE_MAY_NOT_EXIST", Key, err.message);
-      return false;
-    });
+  ).then((r) => {
+    console.log("::FILE_EXIST:: ", r.ContentType);
+    return true;
+  }).catch((err) => {
+    console.error("FILE_MAY_NOT_EXIST", Key, err.message);
+    return false;
+  });
 };
-var getPutFileUrl = (Key, expiresIn = 900) =>
-  getSignedUrl(
-    getS3Client(),
-    new PutObjectCommand({
-      Bucket,
-      Key,
-    }),
-    { expiresIn }
-  );
-var getDeleteFileUrl = async (Key) =>
-  getSignedUrl(
-    getS3Client(),
-    new DeleteObjectCommand({
-      Bucket,
-      Key,
-    }),
-    { expiresIn: 3600 }
-  );
+var getPutFileUrl = (Key, expiresIn = 900, ACL = "private") => getSignedUrl(
+  getS3Client(),
+  new PutObjectCommand({
+    Bucket,
+    Key,
+    ACL
+  }),
+  { expiresIn }
+);
+var getDeleteFileUrl = async (Key) => getSignedUrl(
+  getS3Client(),
+  new DeleteObjectCommand({
+    Bucket,
+    Key
+  }),
+  { expiresIn: 3600 }
+);
 var s3Client;
 function getS3Client() {
   s3Client ??= new S3Client({
     region: process.env.AWS_REGION || "auto",
-    endpoint: process.env.AWS_ENDPOINT_URL_S3,
+    endpoint: process.env.AWS_ENDPOINT_URL_S3
   });
   return s3Client;
 }
@@ -162,24 +159,22 @@ var handler = async (request, cb, options) => {
         await getPutPartUrl({
           Key: body.key,
           UploadId: body.uploadId,
-          PartNumber: body.partNumber,
+          PartNumber: body.partNumber
         })
       );
     case COMPLETE_MULTIPART_STRING:
       const completedData = await completeMultipart({
         ETags: body.etags,
         Key: body.key,
-        UploadId: body.uploadId,
+        UploadId: body.uploadId
       });
       const complete = {
         ...body,
         completedData,
-        intent: void 0,
+        intent: void 0
       };
       console.info("::MULTIPART_COMPLETED:: ", complete.key);
-      return typeof cb === "function"
-        ? cb(complete)
-        : new Response(JSON.stringify(complete));
+      return typeof cb === "function" ? cb(complete) : new Response(JSON.stringify(complete));
     default:
       return new Response(null);
   }
@@ -193,5 +188,5 @@ export {
   getReadURL,
   getS3Client,
   handler,
-  listObjectsInFolder,
+  listObjectsInFolder
 };
