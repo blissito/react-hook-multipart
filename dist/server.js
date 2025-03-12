@@ -16,7 +16,8 @@ import {
   GetObjectCommand,
   HeadObjectCommand,
   PutObjectCommand,
-  ListObjectsV2Command
+  ListObjectsV2Command,
+  PutObjectAclCommand
 } from "@aws-sdk/client-s3";
 import { randomUUID } from "crypto";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
@@ -118,6 +119,15 @@ var fileExist = (Key) => {
     return false;
   });
 };
+var getPutACLFileUrl = (Key, expiresIn = 900, ACL = "private") => getSignedUrl(
+  getS3Client(),
+  new PutObjectAclCommand({
+    Bucket,
+    Key,
+    ACL
+  }),
+  { expiresIn }
+);
 var getPutFileUrl = (Key, expiresIn = 900, ACL = "private") => getSignedUrl(
   getS3Client(),
   new PutObjectCommand({
@@ -184,6 +194,7 @@ export {
   deleteObjects,
   fileExist,
   getDeleteFileUrl,
+  getPutACLFileUrl,
   getPutFileUrl,
   getReadURL,
   getS3Client,

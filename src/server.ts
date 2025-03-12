@@ -5,6 +5,7 @@ export {
   getReadURL,
   getS3Client,
   getPutFileUrl,
+  getPutACLFileUrl,
   getDeleteFileUrl,
   listObjectsInFolder,
   deleteObjects,
