@@ -146,12 +146,17 @@ export const fileExist = (Key: string) => {
     });
 };
 
-export const getPutFileUrl = (Key: string, expiresIn: number = 900) =>
+export const getPutFileUrl = (
+  Key: string,
+  expiresIn: number = 900,
+  ACL: "private" | "public-read" = "private"
+) =>
   getSignedUrl(
     getS3Client(),
     new PutObjectCommand({
       Bucket,
       Key,
+      ACL,
     }),
     { expiresIn }
   );
