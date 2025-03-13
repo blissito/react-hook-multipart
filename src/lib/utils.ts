@@ -104,13 +104,14 @@ export const createMultipart = async (
   };
 };
 
-export const deleteObject = (Key: string) =>
-  getS3Client().send(
+export const deleteObject = (Key: string, bucket?: string) => {
+  return getS3Client().send(
     new DeleteObjectCommand({
-      Bucket,
+      Bucket: bucket || Bucket,
       Key,
     })
   );
+};
 
 const globalBucket = Bucket;
 export const getReadURL = (

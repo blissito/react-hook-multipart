@@ -85,12 +85,14 @@ var createMultipart = async (fileName, ACL = "private") => {
     key: Key
   };
 };
-var deleteObject = (Key) => getS3Client().send(
-  new DeleteObjectCommand({
-    Bucket,
-    Key
-  })
-);
+var deleteObject = (Key, bucket) => {
+  return getS3Client().send(
+    new DeleteObjectCommand({
+      Bucket: bucket || Bucket,
+      Key
+    })
+  );
+};
 var globalBucket = Bucket;
 var getReadURL = (Key, expiresIn = 900, options = {}) => {
   const { Bucket: Bucket2 = globalBucket } = options;
