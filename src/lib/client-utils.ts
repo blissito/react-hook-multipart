@@ -171,9 +171,11 @@ export const completeMultipart = async (args: {
   metadata: FileMetadata;
   handler?: string;
   signal?: AbortSignal;
+  data?: any;
 }) => {
   const {
     key,
+    data,
     etags,
     signal,
     access,
@@ -193,6 +195,7 @@ export const completeMultipart = async (args: {
         uploadId,
         access,
         etags,
+        data,
         key,
       }),
     });

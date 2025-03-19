@@ -70,8 +70,10 @@ export const useUploadMultipart = (options?: {
   const upload = async (
     fileName: string,
     file: File,
-    progressCb?: OnUploadProgress
+    progressCb?: OnUploadProgress,
+    options?: { data: string }
   ) => {
+    const { data } = options || {};
     const metadata: FileMetadata = {
       name: file.name,
       size: file.size,
@@ -101,6 +103,7 @@ export const useUploadMultipart = (options?: {
       uploadId,
       etags,
       handler,
+      data,
     });
     return {
       uploadId,
