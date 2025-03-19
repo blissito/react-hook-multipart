@@ -114,6 +114,7 @@ var uploadAllParts = async (options) => {
 var completeMultipart = async (args) => {
   const {
     key,
+    data,
     etags,
     signal,
     access,
@@ -133,6 +134,7 @@ var completeMultipart = async (args) => {
         uploadId,
         access,
         etags,
+        data,
         key
       })
     });
@@ -151,7 +153,8 @@ var useUploadMultipart = (options) => {
     onUploadProgress = noop,
     multipart
   } = options || {};
-  const upload = async (fileName, file, progressCb) => {
+  const upload = async (fileName, file, progressCb, options2) => {
+    const { data } = options2 || {};
     const metadata = {
       name: file.name,
       size: file.size,
@@ -180,7 +183,8 @@ var useUploadMultipart = (options) => {
       key,
       uploadId,
       etags,
-      handler
+      handler,
+      data
     });
     return {
       uploadId,
