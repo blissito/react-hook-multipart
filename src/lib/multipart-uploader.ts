@@ -65,7 +65,7 @@ export const handler = async (
         completedData: completedData,
         intent: undefined,
       };
-      console.info("::MULTIPART_COMPLETED:: ", complete.key);
+      console.info("::MULTIPART_COMPLETED:: ", complete);
       return typeof cb === "function"
         ? cb(complete)
         : new Response(JSON.stringify(complete));

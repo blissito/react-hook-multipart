@@ -13,6 +13,7 @@ export type UploadCompletedData = {
   access: string;
   completedData: any;
   metadata: FileMetadata;
+  data?: any;
 };
 export type FileMetadata = {
   name: string;
