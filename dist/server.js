@@ -178,7 +178,7 @@ var handler = async (request, cb, options) => {
         completedData,
         intent: void 0
       };
-      console.info("::MULTIPART_COMPLETED:: ", complete);
+      console.info("::MULTIPART_COMPLETED:: ", complete.key);
       return typeof cb === "function" ? cb(complete) : new Response(JSON.stringify(complete));
     default:
       return new Response(null);

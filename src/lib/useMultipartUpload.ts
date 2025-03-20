@@ -61,7 +61,7 @@ export const useUploadMultipart = (options?: {
   multipart?: true;
 }) => {
   const {
-    access = "public-read", // public by default
+    access = "private",
     handler,
     onUploadProgress = noop,
     multipart,

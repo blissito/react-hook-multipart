@@ -147,8 +147,7 @@ var noop = () => {
 };
 var useUploadMultipart = (options) => {
   const {
-    access = "public-read",
-    // public by default
+    access = "private",
     handler,
     onUploadProgress = noop,
     multipart
