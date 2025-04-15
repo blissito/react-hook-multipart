@@ -45,17 +45,18 @@ export interface UploadOptions {
   cacheControlMaxAge?: number;
 }
 
-type OnUploadProgress = (event: {
+type ProgressItems = {
   total: number;
   loaded: number;
   percentage: number;
-}) => void;
+};
+type OnUploadProgressFunction = (event: ProgressItems) => void;
 
 const noop = () => {};
 
 // client
 export const useUploadMultipart = (options?: {
-  onUploadProgress?: OnUploadProgress;
+  onUploadProgress?: OnUploadProgressFunction;
   handler?: string;
   access?: "public-read" | "private";
   multipart?: true;
@@ -70,7 +71,7 @@ export const useUploadMultipart = (options?: {
   const upload = async (
     fileName: string,
     file: File,
-    progressCb?: OnUploadProgress,
+    progressCb?: OnUploadProgressFunction,
     options?: { data: string }
   ) => {
     const { data } = options || {};

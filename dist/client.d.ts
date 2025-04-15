@@ -13,13 +13,14 @@ type FileMetadata = {
     type: string;
 };
 
-type OnUploadProgress = (event: {
+type ProgressItems = {
     total: number;
     loaded: number;
     percentage: number;
-}) => void;
+};
+type OnUploadProgressFunction = (event: ProgressItems) => void;
 declare const useUploadMultipart: (options?: {
-    onUploadProgress?: OnUploadProgress;
+    onUploadProgress?: OnUploadProgressFunction;
     handler?: string;
     access?: "public-read" | "private";
     multipart?: true;
