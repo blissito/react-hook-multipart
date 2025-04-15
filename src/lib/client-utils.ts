@@ -157,7 +157,7 @@ export const uploadAllParts = async (options: {
       loaded += blob.size; // exact sum
       const percentage = (loaded / file.size) * 100;
       onUploadProgress?.({ total: file.size, loaded, percentage }); // on progress
-      const str = response.headers.get("ETag");
+      const str = response!.headers.get("ETag");
       return String(str).replaceAll('"', ""); // cleaun up
     }
   );

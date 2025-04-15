@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "strict": true,
-    "lib": ["DOM", "DOM.Iterable", "ES2020"],
+    "lib": ["DOM", "DOM.Iterable", "ES2020", "ES2021.String"],
     "module": "ES2022",
     "moduleResolution": "Bundler",
     "target": "ESNext",

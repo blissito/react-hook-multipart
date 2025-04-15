@@ -12,6 +12,7 @@ export type Complete = {
   uploadId: string;
   etags: string[];
   key: string;
+  data: any;
   completedData: {
     $metadata: {
       httpStatusCode: number;
@@ -62,7 +63,7 @@ export const handler = async (
       });
       const complete = {
         ...body,
-        completedData: completedData,
+        completedData,
         intent: undefined,
       };
       console.info("::MULTIPART_COMPLETED:: ", complete.key);
