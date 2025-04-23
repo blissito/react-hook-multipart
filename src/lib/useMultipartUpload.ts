@@ -60,8 +60,10 @@ export const useUploadMultipart = (options?: {
   handler?: string;
   access?: "public-read" | "private";
   multipart?: true;
+  signal?: AbortSignal;
 }) => {
   const {
+    signal,
     access = "private",
     handler,
     onUploadProgress = noop,
@@ -74,7 +76,7 @@ export const useUploadMultipart = (options?: {
     progressCb?: OnUploadProgressFunction,
     options?: { data: string; signal?: AbortSignal }
   ) => {
-    const { data, signal } = options || {};
+    const { data } = options || {};
     const metadata: FileMetadata = {
       name: file.name,
       size: file.size,

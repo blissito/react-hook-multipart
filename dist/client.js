@@ -157,13 +157,14 @@ var noop = () => {
 };
 var useUploadMultipart = (options) => {
   const {
+    signal,
     access = "private",
     handler,
     onUploadProgress = noop,
     multipart
   } = options || {};
   const upload = async (fileName, file, progressCb, options2) => {
-    const { data, signal } = options2 || {};
+    const { data } = options2 || {};
     const metadata = {
       name: file.name,
       size: file.size,

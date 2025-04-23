@@ -24,6 +24,7 @@ declare const useUploadMultipart: (options?: {
     handler?: string;
     access?: "public-read" | "private";
     multipart?: true;
+    signal?: AbortSignal;
 }) => {
     upload: (fileName: string, file: File, progressCb?: OnUploadProgressFunction, options?: {
         data: string;
