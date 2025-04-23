@@ -64,13 +64,14 @@ var getPutPartUrl = (options) => getSignedUrl(
     expiresIn: options.expiresIn
   }
 );
-var createMultipart = async (fileName, ACL = "private") => {
+var createMultipart = async (fileName, ACL = "private", signal) => {
   let Key = randomUUID();
   if (fileName) {
     const name = fileName.split(".");
     const ext = name.pop();
     Key = name.join(".") + "_" + Key + "." + ext;
   }
+  setAbortListener(signal);
   const { UploadId } = await getS3Client().send(
     new CreateMultipartUploadCommand({
       Bucket,
@@ -148,6 +149,21 @@ function getS3Client() {
   });
   return s3Client;
 }
+var setAbortListener = (signal) => {
+  signal?.addEventListener(
+    "abort",
+    () => {
+      throwIfAborted(signal);
+    },
+    { once: true }
+  );
+};
+var throwIfAborted = (signal) => {
+  if (signal?.aborted) {
+    console.info("::ABORT::REASON::", signal.reason);
+    throw new Error("Upload aborted \u{1F6AD}");
+  }
+};
 
 // src/lib/multipart-uploader.ts
 var handler = async (request, cb, options) => {

@@ -79,7 +79,8 @@ export const getPutPartUrl = (options: {
 
 export const createMultipart = async (
   fileName?: string,
-  ACL: "public-read" | "private" = "private"
+  ACL: "public-read" | "private" = "private",
+  signal?: AbortSignal
 ) => {
   let Key: `${string}-${string}-${string}-${string}-${string}` | string =
     randomUUID();
@@ -88,7 +89,7 @@ export const createMultipart = async (
     const ext = name.pop();
     Key = name.join(".") + "_" + Key + "." + ext; // @todo revisit
   }
-  // await setCors();
+  setAbortListener(signal); // experimental...
   const { UploadId } = await getS3Client().send(
     new CreateMultipartUploadCommand({
       Bucket,
@@ -210,4 +211,45 @@ export function getS3Client() {
     endpoint: process.env.AWS_ENDPOINT_URL_S3,
   });
   return s3Client;
+}
+
+// LEARNING WILL DELETE SOON
+const setAbortListener = (signal?: AbortSignal) => {
+  signal?.addEventListener(
+    "abort",
+    () => {
+      throwIfAborted(signal);
+      // @todo cancel upload?
+      // @todo update state?
+      // @todo update cache?
+    },
+    { once: true }
+  );
+};
+
+const throwIfAborted = (signal?: AbortSignal | null) => {
+  if (signal?.aborted) {
+    console.info("::ABORT::REASON::", signal.reason);
+    throw new Error("Upload aborted 🚭");
+  }
+};
+
+// This can't be arrow function (this) 🤓
+function abortOn(
+  this: {
+    abort: (reason: string) => void;
+    then?: Promise<any>["then"];
+  },
+  signal?: AbortSignal
+) {
+  if (signal) {
+    const abortPromise = () => this.abort(signal.reason);
+    signal.addEventListener("abort", abortPromise);
+    const removeAbortListener = () => {
+      signal.removeEventListener("abort", abortPromise);
+    };
+    this.then?.(removeAbortListener, removeAbortListener);
+  }
+
+  return this;
 }
