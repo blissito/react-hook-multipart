@@ -55,7 +55,8 @@ var uploadOnePartRetry = async ({
   attempts = 1,
   url,
   blob,
-  options
+  options,
+  signal
 }) => {
   let retryCount = 0;
   return await retry(
@@ -63,7 +64,7 @@ var uploadOnePartRetry = async ({
       const response = await fetch(url, {
         method: "PUT",
         body: blob,
-        signal: options?.abortSignal
+        signal
       });
       if (403 === response.status) {
         bail(new Error("Unauthorized"));
@@ -100,8 +101,6 @@ var uploadAllParts = async (options) => {
   let loaded = 0;
   const uploadPromises = Array.from({ length: numberOfParts }).map(
     async (_, i) => {
-      console.info("::ABORT_SIGNAL::", signal);
-      signal?.throwIfAborted();
       const url = await getPutPartUrl({
         partNumber: i + 1,
         uploadId,
@@ -112,7 +111,11 @@ var uploadAllParts = async (options) => {
       const start = i * PART_SIZE;
       const end = Math.min(start + PART_SIZE, file.size);
       const blob = file.slice(start, end);
-      const response = await uploadOnePartRetry({ url, blob });
+      const response = await uploadOnePartRetry({
+        url,
+        blob,
+        signal
+      });
       loaded += blob.size;
       const percentage = loaded / file.size * 100;
       onUploadProgress?.({ total: file.size, loaded, percentage });

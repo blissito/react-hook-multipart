@@ -86,7 +86,9 @@ const uploadOnePartRetry = async ({
   url,
   blob,
   options,
+  signal,
 }: {
+  signal?: AbortSignal;
   options?: UploadOptions;
   url: string;
   blob: Blob;
@@ -98,7 +100,7 @@ const uploadOnePartRetry = async ({
       const response = await fetch(url, {
         method: "PUT",
         body: blob,
-        signal: options?.abortSignal,
+        signal,
       });
       // @todo abort and content-type?
       if (403 === response.status) {
@@ -152,8 +154,6 @@ export const uploadAllParts = async (options: {
   let loaded = 0; // the magic is just a let 🪄✨🧷
   const uploadPromises = Array.from({ length: numberOfParts }).map(
     async (_, i: number) => {
-      console.info("::ABORT_SIGNAL::", signal);
-      signal?.throwIfAborted(); // abort experiment
       const url = await getPutPartUrl({
         partNumber: i + 1,
         uploadId,
@@ -164,7 +164,11 @@ export const uploadAllParts = async (options: {
       const start = i * PART_SIZE;
       const end = Math.min(start + PART_SIZE, file.size);
       const blob = file.slice(start, end); // directly from disk, no mainthread 🤩
-      const response = await uploadOnePartRetry({ url, blob }); // trhow error after 5 retrys
+      const response = await uploadOnePartRetry({
+        url,
+        blob,
+        signal,
+      }); // trhow error after 5 retrys
       loaded += blob.size; // exact sum
       const percentage = (loaded / file.size) * 100;
       onUploadProgress?.({ total: file.size, loaded, percentage }); // on progress
