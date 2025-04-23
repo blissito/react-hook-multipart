@@ -27,7 +27,7 @@ export interface UploadOptions {
    * Whether the file should be publicly accessible.
    * I'm following the ACL string values 'private' | 'public-read'
    */
-  access: "public-read" | "private";
+  access?: "public-read" | "private";
   /**
    * Adds a random uuid to the filename.
    * @defaultvalue true
@@ -72,9 +72,9 @@ export const useUploadMultipart = (options?: {
     fileName: string,
     file: File,
     progressCb?: OnUploadProgressFunction,
-    options?: { data: string }
+    options?: { data: string; signal?: AbortSignal }
   ) => {
-    const { data } = options || {};
+    const { data, signal } = options || {};
     const metadata: FileMetadata = {
       name: file.name,
       size: file.size,
@@ -87,7 +87,9 @@ export const useUploadMultipart = (options?: {
     const { uploadId, key } = await createMultipartUpload(
       handler,
       fileName,
-      access
+      access,
+      { abortSignal: signal }
+      // @todo signal?
     );
     const etags = await uploadAllParts({
       file,
@@ -96,6 +98,7 @@ export const useUploadMultipart = (options?: {
       numberOfParts,
       uploadId,
       onUploadProgress: progressCb || onUploadProgress,
+      signal, // experimenting...
     });
     const completedData = await completeMultipart({
       access, // just to pass it trhough

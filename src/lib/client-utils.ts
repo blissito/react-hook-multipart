@@ -138,17 +138,27 @@ export const uploadAllParts = async (options: {
     percentage: number;
   }) => void;
   handler?: string;
+  signal?: AbortSignal;
 }) => {
-  const { file, numberOfParts, uploadId, key, onUploadProgress, handler } =
-    options;
+  const {
+    signal,
+    file,
+    numberOfParts,
+    uploadId,
+    key,
+    onUploadProgress,
+    handler,
+  } = options;
   let loaded = 0; // the magic is just a let 🪄✨🧷
   const uploadPromises = Array.from({ length: numberOfParts }).map(
     async (_, i: number) => {
+      signal?.throwIfAborted(); // abort experiment
       const url = await getPutPartUrl({
         partNumber: i + 1,
         uploadId,
         key,
         handler,
+        // signal,
       });
       const start = i * PART_SIZE;
       const end = Math.min(start + PART_SIZE, file.size);

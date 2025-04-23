@@ -63,8 +63,10 @@ export const getPutPartUrl = (options: {
   UploadId: string;
   PartNumber: number;
   expiresIn?: number; // defaults to 15m
-}) =>
-  getSignedUrl(
+  signal?: AbortSignal;
+}) => {
+  setAbortListener(options.signal);
+  return getSignedUrl(
     getS3Client(),
     new UploadPartCommand({
       Bucket,
@@ -76,6 +78,7 @@ export const getPutPartUrl = (options: {
       expiresIn: options.expiresIn,
     }
   );
+};
 
 export const createMultipart = async (
   fileName?: string,

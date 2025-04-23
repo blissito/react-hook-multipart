@@ -88,15 +88,25 @@ var uploadOnePartRetry = async ({
   );
 };
 var uploadAllParts = async (options) => {
-  const { file, numberOfParts, uploadId, key, onUploadProgress, handler } = options;
+  const {
+    signal,
+    file,
+    numberOfParts,
+    uploadId,
+    key,
+    onUploadProgress,
+    handler
+  } = options;
   let loaded = 0;
   const uploadPromises = Array.from({ length: numberOfParts }).map(
     async (_, i) => {
+      signal?.throwIfAborted();
       const url = await getPutPartUrl({
         partNumber: i + 1,
         uploadId,
         key,
         handler
+        // signal,
       });
       const start = i * PART_SIZE;
       const end = Math.min(start + PART_SIZE, file.size);
@@ -153,7 +163,7 @@ var useUploadMultipart = (options) => {
     multipart
   } = options || {};
   const upload = async (fileName, file, progressCb, options2) => {
-    const { data } = options2 || {};
+    const { data, signal } = options2 || {};
     const metadata = {
       name: file.name,
       size: file.size,
@@ -165,7 +175,9 @@ var useUploadMultipart = (options) => {
     const { uploadId, key } = await createMultipartUpload(
       handler,
       fileName,
-      access
+      access,
+      { abortSignal: signal }
+      // @todo signal?
     );
     const etags = await uploadAllParts({
       file,
@@ -173,7 +185,9 @@ var useUploadMultipart = (options) => {
       key,
       numberOfParts,
       uploadId,
-      onUploadProgress: progressCb || onUploadProgress
+      onUploadProgress: progressCb || onUploadProgress,
+      signal
+      // experimenting...
     });
     const completedData = await completeMultipart({
       access,

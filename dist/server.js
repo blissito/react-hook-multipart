@@ -52,18 +52,21 @@ var completeMultipart = ({
     })
   );
 };
-var getPutPartUrl = (options) => getSignedUrl(
-  getS3Client(),
-  new UploadPartCommand({
-    Bucket,
-    Key: options.Key,
-    UploadId: options.UploadId,
-    PartNumber: options.PartNumber
-  }),
-  {
-    expiresIn: options.expiresIn
-  }
-);
+var getPutPartUrl = (options) => {
+  setAbortListener(options.signal);
+  return getSignedUrl(
+    getS3Client(),
+    new UploadPartCommand({
+      Bucket,
+      Key: options.Key,
+      UploadId: options.UploadId,
+      PartNumber: options.PartNumber
+    }),
+    {
+      expiresIn: options.expiresIn
+    }
+  );
+};
 var createMultipart = async (fileName, ACL = "private", signal) => {
   let Key = randomUUID();
   if (fileName) {
