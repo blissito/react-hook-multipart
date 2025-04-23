@@ -100,6 +100,7 @@ var uploadAllParts = async (options) => {
   let loaded = 0;
   const uploadPromises = Array.from({ length: numberOfParts }).map(
     async (_, i) => {
+      console.info("::ABORT_SIGNAL::", signal);
       signal?.throwIfAborted();
       const url = await getPutPartUrl({
         partNumber: i + 1,

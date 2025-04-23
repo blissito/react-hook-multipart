@@ -152,6 +152,7 @@ export const uploadAllParts = async (options: {
   let loaded = 0; // the magic is just a let 🪄✨🧷
   const uploadPromises = Array.from({ length: numberOfParts }).map(
     async (_, i: number) => {
+      console.info("::ABORT_SIGNAL::", signal);
       signal?.throwIfAborted(); // abort experiment
       const url = await getPutPartUrl({
         partNumber: i + 1,
