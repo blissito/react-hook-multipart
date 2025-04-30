@@ -164,6 +164,7 @@ var setAbortListener = (signal) => {
 var throwIfAborted = (signal) => {
   if (signal?.aborted) {
     console.info("::ABORT::REASON::", signal.reason);
+    console.log("Aborted by signal \u203C\uFE0F");
     throw new Error("Upload aborted \u{1F6AD}");
   }
 };
