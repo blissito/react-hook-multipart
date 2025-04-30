@@ -36,7 +36,7 @@ export const handler = async (
     ACL: "public-read" | "private";
     directory: string;
   }
-) => {
+): Promise<Response> => {
   const { ACL = "private", directory = "" } = options || {};
   // @todo auth?
   const body = await request.json();
